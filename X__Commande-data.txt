@@ -1,0 +1,36 @@
+
+
+
+
+
+
+
+commande centraliser : node comande.js
+
+        Commande pour cbbi-zone-detector.js :
+
+                node Btc/Fibo-zones/cbbi-zone-detector.js 
+
+
+        Commande pour cbbi-zone-detector-cycle.js :
+
+                node Btc/Fibo-zones/cbbi-zone-detector-cycle.js 
+
+
+        Commande pour cbbi-cross-detector.js :
+
+
+                node Btc/Cross/cbbi-cross-detector.js
+
+
+
+
+
+
+
+
+
+
+
+
+                

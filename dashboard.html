@@ -1,0 +1,653 @@
+
+
+<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------>
+
+<!-- dashboard.html                                                                                                                                                                          --> 
+<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------>
+
+
+<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------>
+<!--                                       1 , 2 , 3 , 4 , 5 , 6 , 7                                                                                                                         -->
+<!--                                       // GESTION DE LA PAGE PRINCIPALE GOOGLE  :                                                                                                        -->                               
+
+
+<!-- ======================================================================================================================== -->
+<!--                                       1 : STYLES GÉNÉRAUX                                                                -->
+<!--                                                                                                                          -->                                         
+<!-- ======================================================================================================================== -->
+<!--                                       2 : TITRE PRINCIPAL DU DASHBOARD                                                   -->
+<!--                                                                                                                          -->                                            
+<!-- ======================================================================================================================== -->
+<!--                                       3 : GRAPHIQUES CBBI / FOOTER - CONTRÔLES POUR LA SÉLECTION DES VALEURS FIBONACCI   -->
+<!--                                                                                                                          -->   
+<!-- ======================================================================================================================== -->
+<!--                                       4 : GRAPHIQUES BTC / FOOTER - CONTRÔLES DES MODES ET ÉCHELLES                      -->
+<!--                                                                                                                          -->   
+<!-- ======================================================================================================================== -->                                         
+<!--                                       5 : GRAPHIQUES CFGI / FOOTER - CONTRÔLES AFFICHAGE                                 -->                                         
+<!--                                                                                                                          -->     
+<!-- ======================================================================================================================== -->
+<!--                                       6 : EXPLICATION / EDUCATIONS                                                       -->
+<!--                                                                                                                          -->   
+<!-- ======================================================================================================================== -->
+<!--                                       7 : SCRIPTS IMPORTÉS (MODULES JS)                                                  -->
+<!--                                                                                                                          -->   
+<!-- ======================================================================================================================== -->
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="fr">
+
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Graphique CBBI + Fibonacci + BTC avec échelle log/ar</title>
+  <script src="https://unpkg.com/lightweight-charts@4.1.1/dist/lightweight-charts.standalone.production.js"></script>
+
+  <!-- ======================================================================================================================== -->
+  <!--                                       1 : STYLES GÉNÉRAUX                                                                -->
+  <!-- ======================================================================================================================== -->
+
+
+  <style>
+    body { 
+      font-family: Arial, sans-serif; 
+      margin: 20px; 
+      background-color: #cfcfda; 
+      min-height: 150vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    #chartBTC {
+      width: 100%; 
+      height: 500px; 
+      margin-top: 20px;
+      flex-shrink: 0;
+      background: white;
+      border: 1px solid #ccc;
+    }
+
+
+
+    label, input, button, select {
+      margin: 5px; 
+      font-size: 14px;
+    }
+
+    #spacer {
+      height: 500px;
+    }
+
+    footer {
+      background: #eeeef3; 
+      padding: 15px 20px;
+      border-radius: 6px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    
+    #colorControls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      align-items: center;
+      min-width: 250px;
+      flex-grow: 1;
+    }
+
+    #colorControls label {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 13px;
+      user-select: none;
+      min-width: 140px;
+    }
+
+    #colorControls input[type=color] {
+      width: 40px;
+      height: 24px;
+      padding: 0;
+      border: none;
+      cursor: pointer;
+    }
+
+    #colorControls input[type=range] {
+      width: 100px;
+      cursor: pointer;
+    }
+
+    .opacity-label {
+      min-width: 50px;
+      font-size: 12px;
+      color: #444;
+      user-select: none;
+    }
+
+    #scaleControlWrapper {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+      min-width: 140px;
+      user-select: none;
+    }
+  </style>
+</head>
+
+
+<body>
+
+  <!-- ======================================================================================================================== -->
+  <!--                                       2 : TITRE PRINCIPAL DU DASHBOARD                                                   -->
+  <!-- ======================================================================================================================== -->
+
+
+  <footer >
+  <h2> 1 - Graphique CBBI + Fibonacci retracement <br> 2 - Graphique BTC +  Mode Color Fibo <br> 3 - Crypto Fear & Greed Index </h2>
+  </footer>
+
+
+
+  <!-- ======================================================================================================================== -->
+  <!--                                       3 : GRAPHIQUES CBBI / FOOTER - CONTRÔLES POUR LA SÉLECTION DES VALEURS FIBONACCI   -->
+  <!-- ======================================================================================================================== -->
+
+
+  <footer>
+  <div>
+    <label for="value1">Valeur Cbbi Fibo point 1 :</label>
+    <input type="number" id="value1" step="0.01" value="100" />
+    <label for="value2">Valeur Cbbi Fibo point 2 :</label>
+    <input type="number" id="value2" step="0.01" value="0.45" />
+
+
+    <!-- Bouton -->
+    <button id="btnDrawFibo">Tracer Fibonacci</button>
+    <button id="btnClearFibo">Supprimer Fibonacci</button>
+    <!-- Bouton -->
+  </div>
+
+
+  <div id="chartCBBI" style="width: 100%; height: 500px;" > </div>       <!--  ajout Graphique CBBI  -->
+  </footer>
+
+
+  <!-- ======================================================================================================================== -->
+  <!--                                       4 : GRAPHIQUES BTC / FOOTER - CONTRÔLES DES MODES ET ÉCHELLES                      -->                                  
+  <!-- ======================================================================================================================== -->
+
+
+  <footer>
+
+    <div id="chartBTC" style="width: 100%; height: 500px; " > </div>   <!--  ajout Graphique BTC  -->  
+
+    
+      <div id="scaleControlWrapper">
+        <div id="scaleLabelSelectWrapper">
+          <label for="scaleSelector">Échelle BTC :</label>
+          <select id="scaleSelector">
+            <option value="log">Logarithmique</option>
+            <option value="arith">Arithmétique</option>
+          </select>
+        </div>
+
+        <!-- Bouton -->
+
+        <button id="toggleAltBtn">                                                               <!--  Bouton halving date                     -->
+          Afficher / Masquer Date-Halving
+        </button>
+
+
+        <button id="toggleCBBIonBTC">Afficher mode 1 ( Zone-Fibo-Cbbi ) </button>                <!--  Bouton zone-fibo-cbbi ( mode 1 )        -->                  
+
+        <button id="toggleCBBIonBTC4">Afficher mode 2 ( Zone-Fibo-Cycle-Cbbi ) </button>         <!--  Bouton zone-fibo-cycle-cbbi ( mode 2 )  --> 
+
+        <button id="toggleCFGIonBTC">Afficher  Mode 3 ( Zone-Sentiment-Cfgi )</button>           <!--  Bouton cfgi ( mode cfgi )               --> 
+                         
+        <!-- Bouton -->
+
+
+      </div>
+
+      <div id="assetControlWrapper">
+          <div id="assetLabelSelectWrapper">
+              <label for="assetSelector">Actif :</label>
+              <select id="assetSelector">
+                  <option value="BTC">Bitcoin (BTC)</option>
+                  <option value="ETH">Ethereum (ETH)</option>                                    <!-- gestion multi-actif -->
+                  <option value="BNB">BNB (BNB)</option>
+                  <option value="SOL">Solana (SOL)</option>
+              </select>
+          </div>
+      </div>
+
+  </footer> <br>
+
+
+  <!-- ======================================================================================================================== -->
+  <!--                                       5 : GRAPHIQUES CFGI / FOOTER - CONTRÔLES AFFICHAGE                                 -->
+  <!-- ======================================================================================================================== -->
+
+
+
+  
+
+
+  <footer>
+
+    <div id="chartCFGI" style="width: 100%; height: 500px;"></div>  <!--  ajout Crypto Fear & Greed Index -->
+
+    <div> 
+      <label for="value1">Valeur max  :</label>
+      <input type="number" id="value1CFGI" step="0.01" value="100" />
+      <label for="value2">Valeur min :</label>
+      <input type="number" id="value2CFGI" step="0.01" value="0" />
+
+      <!-- Bouton -->
+      <button id="btnDrawFiboCFGI">Tracer zones </button>
+      <button id="btnClearFiboCFGI">Supprimer zones </button>
+      <!-- Bouton -->
+
+    </div>
+    
+
+  </footer>
+
+
+  
+
+
+
+
+  <!-- ======================================================================================================================== -->
+  <!--                                       6 : ( 6.1 , 6.2 , 6.3 )                                                            -->  
+  <!--                                       6 : EXPLICATION / EDUCATIONS                                                       -->
+  <!-- ======================================================================================================================== -->
+
+
+    <!-- ======================================================================================================================== -->
+    <!--                                       6.1 : 🔎 Qu’est-ce que le CBBI ?                                                   -->
+    <!-- ======================================================================================================================== -->
+
+      <footer>   
+
+        <details> 
+
+          <summary> <h2> 🔎 Qu’est-ce que le CBBI ? </h2> </summary>
+          
+            <section>
+
+              <p>
+                Le CBBI (Crypto Bitcoin Bull Run Index) est un indice composite développé dans le but d’évaluer la maturité d’un cycle haussier du Bitcoin.
+                <p>
+                Il fournit une valeur comprise entre 0 et 100 :
+                </p>
+              </p>
+
+              <ul>
+                <li> Une valeur proche de 0 suggère que le marché se situe potentiellement dans une zone historiquement basse (opportunité d'achat). </li>
+                <li> Une valeur proche de 100 indique que le marché pourrait approcher d’un sommet (zone de surévaluation).                          </li>
+              </ul>
+
+              <p>
+                Le CBBI vise à synthétiser plusieurs signaux de marché afin de proposer une vue d’ensemble consolidée. <br>
+                Il permet ainsi de guider les décisions d’investissement à long terme en réduisant l’influence des émotions et en contextualisant le comportement actuel du marché dans une perspective historique.
+              </p>
+
+            </section>
+            <br>
+
+            <section>
+
+              <h2> 🎯 Objectifs et utilité </h2>
+              <p>Le CBBI est utilisé principalement pour : </p>
+              <ul>
+                <li> Apprécier la position actuelle du marché dans le cycle haussier du Bitcoin.            </li>
+                <li> Renforcer l’analyse de long terme à travers un indicateur agrégé fiable.               </li>
+                <li> Simplifier l'interprétation de plusieurs métriques complexes en un seul indice global. </li>
+                <li> Identifier des zones de prudence ou d’opportunité, sur la base de données historiques. </li>
+              </ul>
+
+            </section>
+            <br>
+
+            <section>
+
+              <h2> 📊 Indicateurs intégrés dans le CBBI </h2>
+              <p> L’indice que vous utilisez est basé sur une combinaison de neuf indicateurs reconnus dans l’analyse du Bitcoin, chacun contribuant à une dimension particulière de l’évaluation du marché : </p>
+              <table border="1" cellpadding="5" cellspacing="0">
+
+                <thead>
+                  <tr>
+                    <th> Indicateur  </th>
+                    <th> Description </th>
+                  </tr>
+                </thead>
+
+                <tbody>
+
+                  <tr>
+                    <td> Pi Cycle                                                                                           </td>
+                    <td> Détecte les sommets potentiels des cycles haussiers à partir de moyennes mobiles spécifiques.      </td>
+                  </tr>
+
+                  <tr>
+                    <td> RUPL                                                                                               </td>
+                    <td> Realized Unprofitable Profit and Loss – mesure les profits/pertes latents selon les prix réalisés. </td>
+                  </tr>
+
+                  <tr>
+                    <td> RHODL                                                                                              </td>
+                    <td> Analyse les différences de comportement entre détenteurs à court et long terme.                    </td>
+                  </tr>
+
+                  <tr>
+                    <td> Puell Multiple                                                                                     </td>
+                    <td> Compare le revenu journalier des mineurs à sa moyenne historique, signalant les excès.             </td>
+                  </tr>
+
+                  <tr>
+                    <td> 2YMA                                                                                               </td>
+                    <td> Compare le prix du Bitcoin à sa moyenne mobile sur deux ans pour évaluer les déviations.           </td>
+                  </tr>
+
+                  <tr>
+                    <td> Trolololo Trend                                                                                    </td>
+                    <td> Modèle log-linéaire utilisé pour représenter la trajectoire de long terme du prix.                 </td>
+                  </tr>
+
+                  <tr>
+                    <td> MVRV Z-Score                                                                                       </td>
+                    <td> Compare la valeur de marché à la valeur réalisée, utile pour repérer les extrêmes.                 </td>
+                  </tr>
+
+                  <tr>
+                    <td> Reserve Risk                                                                                       </td>
+                    <td> Mesure la confiance des détenteurs long terme par rapport au prix actuel.                          </td>
+                  </tr>
+
+                  <tr>
+                    <td> Woobull Model                                                                                      </td>
+                    <td> Modèle synthétisant plusieurs métriques comportementales (créé par Willy Woo).                     </td>
+                  </tr>
+
+                </tbody>
+
+              </table>
+              <br>
+
+            </section>
+            <br>
+
+        </details>  
+
+      </footer>
+
+    <!-- ======================================================================================================================== -->
+
+
+    <!-- ======================================================================================================================== -->
+    <!--                                       6.2 : 🔎 Qu’est-ce que le CFGI ?                                                   -->
+    <!-- ======================================================================================================================== -->
+
+      <footer>   
+
+        <details>
+          <summary><h2>📈 Qu’est-ce que le CFGI ?</h2></summary>
+
+
+          <br>
+
+          <section>
+
+            <h4>
+              <p>
+                Le <span style="color: rgb(255, 153, 0);" > CFGI (Crypto Fear & Greed Index)</span>
+                 est un 
+                 <span style="color: rgb(224, 19, 19);" > indicateur synthétique</span>
+                 conçu pour refléter le
+                <span style="color: rgb(224, 19, 19);" > sentiment global du marché des cryptomonnaies</span>.
+                Il fournit une <span style="color: rgb(224, 19, 19);" > valeur comprise entre 0 et 100</span>,
+                 mise à jour quotidiennement, dans le but d'aider les investisseurs
+                à mieux comprendre l’état émotionnel dominant du marché.
+              </p>
+            </h4>
+
+          </section>
+
+          <br>
+
+          <section>
+
+            <h2>🌡️ Interprétation des zones du CFGI</h2>
+            <strong><p>Plutôt que d'interpréter chaque valeur de manière isolée, le CFGI est divisé en <span style="color: rgb(224, 19, 19);"> zones de sentiment </span>, chacune correspondant à une psychologie dominante du marché :</p></strong>
+
+            <table border="1" cellpadding="5" cellspacing="0">
+              <thead>
+                <tr>
+                  <th>Plage de valeurs</th>
+                  <th>Zone</th>
+                  <th>Interprétation</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>0 – 20</strong></td>  
+                  <td>⬛ <strong>Extreme Fear</strong></td>
+                  <td>Le marché est en panique. Les investisseurs sont dominés par la peur. Historiquement, ces périodes coïncident souvent avec des <strong>opportunités d'achat</strong>.</td>
+                </tr>
+                <tr>
+                  <td><strong>20 – 40</strong></td>
+                  <td>🟩 <strong>Fear / Extreme Fear</strong></td>
+                  <td>Le pessimisme règne. Les acteurs restent prudents ou désengagés. Souvent une zone de <strong>sous-évaluation</strong> prolongée.</td>
+                </tr>
+                <tr>
+                  <td><strong>40 – 60</strong></td>
+                  <td>🟨 <strong>Neutral / Fear</strong></td>
+                  <td>Sentiment modéré. Le marché est dans une phase d’<strong>indécision ou de stabilisation</strong>, ni trop euphorique ni trop craintif.</td>
+                </tr>
+                <tr>
+                  <td><strong>60 – 80</strong></td>
+                  <td>🟧 <strong>Greed / Neutral</strong></td>
+                  <td>L’optimisme s’installe. L’intérêt pour le marché augmente. Cela peut être <strong>encourageant</strong> mais nécessite aussi de la <strong>vigilance</strong>.</td>
+                </tr>
+                <tr>
+                  <td><strong>80 – 100</strong></td>
+                  <td>🟥 <strong>Extreme Greed</strong></td>
+                  <td>Euphorie dominante. Les investisseurs craignent de rater le train (“FOMO”). Historiquement, cela <strong>précède souvent des corrections ou des sommets</strong>.</td>
+                </tr>
+              </tbody>
+            </table>
+
+          </section>
+
+          <br>
+
+          <section>
+
+            <h2>🧠 Pourquoi utiliser le CFGI ?</h2>
+
+            <ul>
+              <li>Les marchés cryptos sont très influencés par les <strong>émotions humaines</strong>, surtout la peur et l’avidité.</li>
+              <li>Le CFGI agrège plusieurs sources de données (volatilité, volumes, réseaux sociaux, recherches Google, etc.).</li>
+              <li>Il offre une <strong>lecture simple, visuelle et synthétique</strong> du climat émotionnel du marché.</li>
+              <li>Il peut être utilisé comme un <strong>indicateur contrarien</strong> :
+                <ul>
+                  <li>📉 Quand la peur est extrême → <strong>potentiel de rebond</strong>.</li>
+                  <li>📈 Quand l’euphorie est extrême → <strong>potentiel de correction</strong>.</li>
+                </ul>
+              </li>
+            </ul>
+
+          </section>
+          <br>
+
+          <section>
+            <h2>🔍 Méthodologie</h2>
+
+            <p>Le CFGI est calculé à partir d’une combinaison de facteurs pondérés :</p>
+
+            <ul>
+              <li><strong>Volatilité</strong>           : mesure l’instabilité récente du marché.</li>
+              <li><strong>Momentum et volume</strong>   : analyse l’intensité des achats ou ventes récentes.</li>
+              <li><strong>Réseaux sociaux</strong>      : détecte l’activité et l’engagement sur Twitter (X).</li>
+              <li><strong>Dominance du Bitcoin</strong> : mesure l’intérêt relatif pour le BTC par rapport aux altcoins.</li>
+              <li><strong>Tendances Google</strong>     : suit l’évolution des recherches liées au Bitcoin.</li>
+            </ul>
+
+            <p>
+              Chaque facteur est normalisé et combiné pour produire une note finale entre 0 et 100.
+            </p>
+          </section>
+          <br>
+
+          <section>
+            <h2>🎯 Objectif du CFGI</h2>
+
+            <p>Le CFGI sert principalement à :</p>
+
+            <ul>
+              <li> Visualiser le sentiment général du marché crypto. </li>
+              <li> Identifier les périodes d’excès émotionnels (peur ou avidité). </li>
+              <li> Compléter une analyse technique ou fondamentale. </li>
+              <li> Détecter des signaux contraires potentiels pour l'investissement. </li>
+            </ul>
+
+            <p>
+              Attention : il s'agit d'un outil de sentiment, pas d’un indicateur de prix à lui seul.
+            </p>
+          </section>
+
+        </details>
+ 
+
+      </footer>
+
+    <!-- ======================================================================================================================== -->
+
+
+    <!-- ======================================================================================================================== -->
+    <!--                                       6.3 : 📊 Utilisation du projet CBBI + Zones Fibonacci                              -->
+    <!-- ======================================================================================================================== -->
+
+      <footer>
+
+        <details>
+
+          <summary> <h2> 📊 Utilisation du projet CBBI + Zones Fibonacci </h2> </summary>
+
+            <p> Ce projet permet de visualiser les cycles du marché Bitcoin grâce à l’indicateur CBBI combiné aux zones de retracement de Fibonacci. Il propose deux modes d’analyse : </p>
+
+            <ol>
+
+              <br> 
+                 <strong> Graphique du CBBI </strong> <br>  
+
+                <br> - Affiche le CBBI avec les niveaux de Fibonacci ( 0 , 0.146 , 0.236 , 0.382 , 0.5 , 0.618 , 0.786 , 0.854 , 0.90 , 1 ) et colore les segments selon leur zone. <br>
+                
+                <br> - Ce mode permet aussi de voir si le CBBI réagit en touchant ces zones de fibo.         <br>
+              <br> 
+
+              <br> 
+                 <strong> Graphique du BTC </strong> <br> 
+
+                <br> - Affiche le prix du Bitcoin avec une coloration selon le mode de zones Fibonacci du CBBI sélectionné, pour mieux comprendre les phases du marché. <br>
+              <br> 
+
+              <br> 
+                 <strong> Graphique du CFGI </strong> <br> 
+
+                <br> - Affiche la valeur du CFGI ainsi que ces zone de sentiment. <br>
+              <br> 
+
+
+              <br> 
+                <li> <strong> Mode 1 “ Zone-Fibo-CBBI ” </strong> <br> </li>
+
+                <br> - Affiche au prix du Bitcoin la coloration des zones Fibonacci du CBBI.                                                                <br>
+
+                <br> - Permet de representer visuelement les corelation entre le CBBI touchant ces zones de fibo et l’impact que cela a sur le prix du BTC. <br>
+              <br> 
+              
+
+              <br> 
+                <li> <strong> Mode 2 “ Zones-Fibo-Cycle-CBBI ” </strong> <br> </li>
+                
+                <br> - Affiche au prix du Bitcoin la coloration des zones Fibonacci ( 0 , 0.146 , 0.854 , 1 ) du CBBI. <br>
+
+                <br> - Simplifie la lecture des cycles :                                                               <br>
+
+                <ul>
+
+                  <p> <li> <span style="color:rgba(216, 176, 240, 0.9);" ><strong>⚪ Zone 0 → 14.6    </strong></span> : Potentiel plus bas de cycle baissier.  </li> </p>
+                  <p> <li> <span style="color:rgba(100, 220, 100, 0.9);" ><strong>🟢 Zone 14.6 → 85.4 </strong></span> : Phase haussière du cycle.              </li> </p>
+                  <p> <li> <span style="color:rgba(0, 0, 0, 0.9);"       ><strong>⚫ Zone 85.4 → 100  </strong></span> : Potentiel plus haut de cycle haussier. </li> </p>
+                  <p> <li> <span style="color:rgb(180, 26, 15);"         ><strong>🔴 Zone 85.4 → 14.6 </strong></span> : Phase baissière du cycle.              </li> </p>
+                  
+                </ul>
+
+              <br> 
+
+                <li> <strong> Mode 3 “ Zone-Sentiment-Cfgi  ” </strong> <br> </li>
+
+                <br> - Affiche au prix du Bitcoin la coloration des zones de sentiment du CFGI.                                                                <br>
+
+                <br> - Permet de representer visuelement le sentiment sur le prix du BTC. <br>
+              <br> 
+
+
+
+            </ol>
+
+        </details>
+
+      </footer>
+
+    <!-- ======================================================================================================================== -->
+
+      <section> <br> <br> <br> <br> <br> </section>
+
+
+  <!-- ======================================================================================================================== -->
+  <!--                                       7 : SCRIPTS IMPORTÉS (MODULES JS)                                                  -->
+  <!-- ======================================================================================================================== -->
+
+
+  <!-- Chart CBBI -->
+
+  <script src="Cbbi/cbbi-chart-fibo.js"></script>                   
+
+  <script src="Cbbi/cbbi-color-btc.js"></script>                         
+  <script src="Cbbi/cbbi-color-cycle-btc.js"></script>                      
+
+
+  <!-- Chart BTC -->
+
+  <script src="Btc/btc-chart.js"></script>                             
+
+  <script src="Btc/Cross/line-verticale.js"></script> 
+ 
+  <script src="Btc/m2-layer.js"></script>
+
+
+  <!-- Chart CFGI -->
+
+  <script src="CFGI/cfgi-chart.js"></script>       
+
+  <script src="CFGI/cfgi-color-btc.js"></script> 
+
+</body>
+</html>
+
+

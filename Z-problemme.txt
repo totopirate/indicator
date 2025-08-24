@@ -1,0 +1,41 @@
+
+
+a faire : 
+
+
+   - gros trie de /Cbbi 
+
+
+    - creer fichier autonome ( update-pages_build_and_deployed.yml )
+
+        - refreesh automatique pages build a 3.30 h / 11.30 h / 19.30 h :
+
+
+
+
+Strucutre :
+
+- racine/
+    - .github/
+        - workflows/
+            - update-pages_build_and_deployed.yml
+            - update-cbbi.yml
+
+
+
+
+
+
+
+// Palette des couleurs des zones fibo (du plus petit au plus grand)
+const zonebtcColors = [
+  { min: 0.45, max: 14.6, color: 'rgba(216, 176, 240, 0.9)' },
+  { min: 14.60, max: 23.60, color: 'rgba(233, 157, 15, 0.9)' },
+  { min: 23.59, max: 38.20, color: 'rgba(231, 231, 28, 0.9)' },
+  { min: 38.20, max: 50.00, color: 'rgba(43, 146, 23, 0.9)' },
+  { min: 50.00, max: 61.80, color: 'rgba(9, 217, 245, 0.9)' },
+  { min: 61.80, max: 78.60, color: 'rgba(107, 145, 224, 0.9)' },
+  { min: 78.60, max: 85.40, color: 'rgba(216, 11, 11, 0.9)' },
+  { min: 85.40, max: 90.00, color: 'rgba(195, 195, 196, 0.9)' },
+  { min: 90.00, max: 100, color: 'rgba(0, 0, 0, 0.9)' },
+];            

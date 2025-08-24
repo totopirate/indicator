@@ -1,0 +1,51 @@
+
+
+
+name: Mise à jour CBBI Zones
+
+on:
+  schedule:
+    - cron: '0 3 * * *'   # Tous les jours à 03:00 (UTC)
+    - cron: '0 11 * * *'   # Tous les jours à 11:00 (UTC)
+    - cron: '0 19 * * *'   # Tous les jours à 19:00 (UTC)
+  workflow_dispatch:      # Exécution manuelle possible
+
+permissions:
+  contents: write         # Permission d'écriture sur le repo
+
+jobs:
+  update-zones:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Cloner le dépôt
+        uses: actions/checkout@v3
+        with:
+          ref: main         # Forcer le checkout de la branche main
+
+      - name: Installer Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Installer les dépendances
+        run: npm install
+
+      - name: Lancer le script cbbi-zone-detector.js
+        run: node Btc/Fibo-zones/cbbi-zone-detector.js
+
+      - name: Lancer le script cbbi-zone-detector-cycle.js
+        run: node Btc/Fibo-zones/cbbi-zone-detector-cycle.js    
+
+      - name: Vérifier branche active
+        run: git branch
+
+      - name: Configurer git et push les changements
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add .
+          git commit -m "Mise à jour auto des zones" || echo "Aucun changement à committer"
+          git push https://x-access-token:${GH_TOKEN}@github.com/totopirate/cbbi-indicator.git HEAD:main
