@@ -2,7 +2,7 @@
 
 // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------    
 
-// cbbi-color-btc.js
+// indicator-main/Cbbi/cbbi-color-btc.js
 // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -60,7 +60,7 @@ async function loadCBBIMap() {
 //                                // Couleurs des zones Fibonacci (rgba + alpha)
 
 let zoneColors3 = [{
-	color: 'rgba(216, 176, 240, 0.9)',
+	color: 'rgba(203, 134, 243, 0.9)',
 	alpha: 0.9
 }, {
 	color: 'rgba(233, 157, 15, 0.9)',
@@ -84,7 +84,7 @@ let zoneColors3 = [{
 	color: 'rgba(164, 164, 165, 0.9)',
 	alpha: 0.9
 }, {
-	color: 'rgba(0, 0, 0, 0.9)',
+	color: 'rgba(255, 255, 255, 0.9)',
 	alpha: 0.9
 }, ];
 
@@ -198,7 +198,7 @@ function drawCBBIColorOverlayOnBTC() {
 
 window.addEventListener('resize', () => {
     if (window.chartInstance) {
-        window.chartInstance.resize(document.getElementById('chartBTC').clientWidth, 500);
+        window.chartInstance.resize(document.getElementById('chartBTC1').clientWidth, 500);
     }
 });
 
@@ -220,14 +220,17 @@ document.getElementById('toggleCBBIonBTC').onclick = () => {
 };
 
 
+
+
+
 // 3.6 :
 // ===================================================================================================================================
 //                               // Quand on change l’échelle du graphique BTC
 
-document.getElementById('scaleSelector').addEventListener('change', e => {
+document.getElementById('scaleSelector1').addEventListener('change', e => {
 	window.currentScale = e.target.value;
 	// Met à jour la série BTC (log/arithmetic) – fonction à écrire dans ton code principal
-	updateBTCChartData(window.chartInstance.getSeries()[0], window.chartInstance, window.btcPriceDataArith, window.btcPriceDataLog, window.currentScale);
+	updateBTCChartData(window.btcLineSeries, window.chartInstance, window.btcPriceDataArith, window.btcPriceDataLog, window.currentScale);
 
 	if (isCBBIVisibleOnBTC) {
 		drawCBBIColorOverlayOnBTC();
@@ -236,7 +239,7 @@ document.getElementById('scaleSelector').addEventListener('change', e => {
 
 window.addEventListener('resize', () => {
 	if (window.chartInstance) {
-		window.chartInstance.resize(document.getElementById('btcChart').clientWidth, 600);
+		window.chartInstance.resize(document.getElementById('chartBTC1').clientWidth, 500);
 	}
 });
 
