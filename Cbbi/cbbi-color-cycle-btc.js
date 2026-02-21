@@ -2,7 +2,7 @@
 
 // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------    
 
-// cbbi-color-cycle-btc.js
+// indicator-main/Cbbi/cbbi-color-cycle-btc.js
 // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -21,12 +21,15 @@
 //                                // Affichage overlay CBBI coloré sur BTC
 // ===================================================================================================================================
 //                                4.4 :
-//                                // Resize handler si besoin
+//                                // Fonction bonus : calcule couleur dynamique selon état historique ( condition suplementaire )
 // ===================================================================================================================================
 //                                4.5 :
-//                                // Toggle affichage CBBI sur BTC
+//                                // Resize handler si besoin
 // ===================================================================================================================================
 //                                4.6 :
+//                                // Toggle affichage CBBI sur BTC
+// ===================================================================================================================================
+//                                4.7 :
 //                                // Mise à jour si on change l’échelle (arithmétique / log)
 // ===================================================================================================================================
 
@@ -62,8 +65,9 @@ async function loadCBBIMap() {
 const zonebtcColorsCycle4 = [ 
   { min: 0.45, max: 14.6, colorUp: 'rgba(216, 176, 240, 0.9)', colorDown: 'rgba(216, 176, 240, 0.91)' },
   { min: 14.6, max: 85.40, colorUp: 'rgba(100, 220, 100, 0.9)', colorDown: 'rgb(180, 26, 15)' },
-  { min: 85.40, max: 100, colorUp: 'rgba(0, 0, 0, 0.9)', colorDown: 'rgba(0, 0, 0, 0.91)' },
+  { min: 85.40, max: 100, colorUp: 'rgba(255, 255, 255, 0.9)', colorDown: 'rgba(255, 255, 255, 0.9)' },
 ];
+
 
 function getColorForZoneCycle({ min, max, direction }) {
   const zone = zonebtcColorsCycle4.find(z => !(max <= z.min || min >= z.max));
@@ -79,7 +83,7 @@ function getColorForZoneCycle({ min, max, direction }) {
 //                                // Affichage overlay CBBI coloré sur BTC
 
 let cbbiColoredSeriesonBtc4  = [];        
-let isCBBIVisibleOnBTC4 = false;        
+let isCBBIVisibleOnBTCCycle = false;        
 
 function drawCBBIColorOverlayOnBTCcycle() {
   if (!window.chartInstance || !window.cbbiMap) {
@@ -128,6 +132,7 @@ function drawCBBIColorOverlayOnBTCcycle() {
     pt.zone = (typeof cbbiVal !== 'undefined') ? findZone(cbbiVal) : null;
   });
 
+
   const segments = [];
   let currentZone = null;
   let currentSegment = [];
@@ -161,6 +166,9 @@ function drawCBBIColorOverlayOnBTCcycle() {
 
   console.log(`Segments Mode 2 créés : ${segments.length}`);
 
+
+
+
   let previousCbbiValue = null;
   segments.forEach(({ zone, points }) => {
     const avgCbbiValue = points.reduce((sum, pt) => sum + pt.cbbiValue, 0) / points.length;
@@ -182,27 +190,122 @@ function drawCBBIColorOverlayOnBTCcycle() {
     series.setData(points);
     cbbiColoredSeriesonBtc4.push(series);
   });
+
+  // 4.4 :
+  // ===================================================================================================================================
+  //                                // Fonction bonus : calcule couleur dynamique selon état historique ( condition suplementaire )
+
+  let marketState = null;
+  let coloringActive = false;
+  let conditionalSegment = [];
+  let conditionalColor = null;
+
+  for (let i = 0; i < btcData.length; i++) {
+
+    const pt = btcData[i];
+    const cbbiVal = pt.cbbiValue;
+
+    if (typeof cbbiVal !== "number") continue;
+
+    // Détection état extrême
+    if (cbbiVal >= 78.6) {
+      marketState = "sur-achat";
+      coloringActive = false;
+      conditionalSegment = [];
+    }
+    else if (cbbiVal <= 14.6) {
+      marketState = "sur-vente";
+      coloringActive = false;
+      conditionalSegment = [];
+    }
+
+    // Activation uniquement si niveau intermédiaire touché
+    if (!coloringActive) {
+
+      if (marketState === "sur-achat" && cbbiVal <= 50) {
+        coloringActive = true;
+        conditionalColor = "rgb(180, 26, 15)";
+        conditionalSegment = [];
+      }
+
+      else if (marketState === "sur-vente" && cbbiVal >= 23.6) {
+        coloringActive = true;
+        conditionalColor = "rgba(100, 220, 100, 0.9)";
+        conditionalSegment = [];
+      }
+    }
+
+    if (coloringActive) {
+      conditionalSegment.push(pt);
+    }
+
+    const nextPt = btcData[i + 1];
+    if (coloringActive && nextPt) {
+
+      const nextVal = nextPt.cbbiValue;
+
+      if (typeof nextVal === "number") {
+
+        if (
+          (marketState === "sur-achat" && nextVal <= 14.6) ||
+          (marketState === "sur-vente" && nextVal >= 78.6)
+        ) {
+
+          if (conditionalSegment.length > 1) {
+
+            const series = window.chartInstance.addLineSeries({
+              color: conditionalColor,
+              lineWidth: 4,
+              priceLineVisible: false,
+              lastValueVisible: false,
+            });
+
+            series.setData(conditionalSegment);
+            cbbiColoredSeriesonBtc4.push(series);
+          }
+
+          coloringActive = false;
+          conditionalSegment = [];
+        }
+      }
+    }
+  }
+
+  if (coloringActive && conditionalSegment.length > 1) {
+
+    const series = window.chartInstance.addLineSeries({
+      color: conditionalColor,
+      lineWidth: 4,
+      priceLineVisible: false,
+      lastValueVisible: false,
+    });
+
+    series.setData(conditionalSegment);
+    cbbiColoredSeriesonBtc4.push(series);
+  }
 }
 
 
-// 4.4 :
+
+
+// 4.5 :
 // ===================================================================================================================================
 //                                // Resize handler si besoin
 
 window.addEventListener('resize', () => {
   if (window.chartInstance) {
-    window.chartInstance.resize(document.getElementById('chartBTC').clientWidth, 500);
+    window.chartInstance.resize(document.getElementById('chartBTC1').clientWidth, 500);
   }
 });
 
 
-// 4.5 :
+// 4.6 :
 // ===================================================================================================================================
 //                                // Toggle affichage CBBI sur BTC (Bouton)
 
 document.getElementById('toggleCBBIonBTC4').onclick = () => {  
-  isCBBIVisibleOnBTC4 = !isCBBIVisibleOnBTC4;
-  if (isCBBIVisibleOnBTC4) {
+  isCBBIVisibleOnBTCCycle = !isCBBIVisibleOnBTCCycle;
+  if (isCBBIVisibleOnBTCCycle) {
     drawCBBIColorOverlayOnBTCcycle();
     document.getElementById('toggleCBBIonBTC4').textContent = "Masquer mode 2 ( Zone-Fibo-Cycle-Cbbi )";
   } else {
@@ -213,27 +316,27 @@ document.getElementById('toggleCBBIonBTC4').onclick = () => {
 };
 
 
-// 4.6 :
+// 4.7 :
 // ===================================================================================================================================
 //                                // Mise à jour si on change l’échelle (arithmétique / log)
 
-document.getElementById('scaleSelector').addEventListener('change', e => {
+document.getElementById('scaleSelector1').addEventListener('change', e => {
   window.currentScale = e.target.value;
   updateBTCChartData(
-    window.chartInstance.getSeries()[0],
+    window.btcLineSeries,
     window.chartInstance,
     window.btcPriceDataArith,
     window.btcPriceDataLog,
     window.currentScale
   );
 
-  if (isCBBIVisibleOnBTC4) {
+  if (isCBBIVisibleOnBTCCycle) {
     drawCBBIColorOverlayOnBTCcycle();
   }
 });
 
 window.addEventListener('resize', () => {
   if (window.chartInstance) {
-    window.chartInstance.resize(document.getElementById('btcChart').clientWidth, 600);
+    window.chartInstance.resize(document.getElementById('chartBTC1').clientWidth, 500);
   }
 });
