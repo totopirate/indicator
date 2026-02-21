@@ -2,7 +2,7 @@
 
 // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-// cfgi-color-btc.js 
+// indicator-main/CFGI/cfgi-color-btc.js 
 // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -182,9 +182,9 @@ document.getElementById('toggleCFGIonBTC').onclick = () => {
 };
 
 // Quand on change l’échelle du graphique BTC
-document.getElementById('scaleSelector').addEventListener('change', e => {
+document.getElementById('scaleSelector1').addEventListener('change', e => {
 	window.currentScale = e.target.value;
-	updateBTCChartData(window.chartInstance.getSeries()[0], window.chartInstance, window.btcPriceDataArith, window.btcPriceDataLog, window.currentScale);
+	updateBTCChartData(window.btcLineSeries, window.chartInstance, window.btcPriceDataArith, window.btcPriceDataLog, window.currentScale);
 	updateCFGIOverlay();
 });
 
