@@ -2,7 +2,7 @@
 
 // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------  
 
-// btc-chart.js
+// indicator-main/Btc/btc-chart.js
 // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -32,7 +32,6 @@
 //                                1.7 :
 //                                // INIT : Lancement initial du graphique BTC
 // ===================================================================================================================================
-
 
 
 
@@ -148,118 +147,127 @@ function addProjectionLine(chart, lastDataPoint) {
 // ===================================================================================================================================
 //                                // Initialise, configure et affiche le graphique BTC avec Lightweight Charts
 
-async function drawBTCChart() {
-	try {
-		// ► Chargement de l'historique BTC complet
-		const rawData = await fetchFullHistory();
 
-		// ► Données échelle arithmétique
-		const dataArith = rawData.map(d => ({
-			time: d.time,
-			value: d.close,
-		}));
+async function drawBTCChart(BtcDivID, scaleSelectorId) {
+    const statusEl = document.getElementById('status-btc'); // Assure-toi d'avoir <div id="status-btc"></div> dans ton HTML
 
-		window.btcPriceData = dataArith;
+    try {
+        // ► Message : Début du chargement
+        if (statusEl) statusEl.textContent = 'Chargement des données BTC...';
 
-		window.btcPriceDataArith = dataArith; // idem pour les données arithmétiques
+        // ► Chargement de l'historique BTC complet
+        const rawData = await fetchFullHistory();
+        if (statusEl) statusEl.textContent = 'Transformation des données (arithmétique/log) en cours...';
 
+        // ► Données échelle arithmétique
+        const dataArith = rawData.map(d => ({
+            time: d.time,
+            value: d.close,
+        }));
 
-		// ► Données échelle logarithmique
-		const dataLog = transformToLog(dataArith);
+        window.btcPriceData = dataArith;
+        window.btcPriceDataArith = dataArith; 
 
-		window.btcPriceDataLog = dataLog; // pour accès aux données log dans les autres fichiers
+        // ► Données échelle logarithmique
+        const dataLog = transformToLog(dataArith);
+        window.btcPriceDataLog = dataLog; 
 
+        if (statusEl) statusEl.textContent = 'Création du graphique BTC...';
 
-		// ► Création du graphique
-		const chart = LightweightCharts.createChart(document.getElementById('chartBTC'), {
-			width: document.getElementById('chartBTC').clientWidth,
-			height: 500,
-			layout: {
-				background: { color: '#ffffff' }, // ✅ Nouvelle syntaxe
-				textColor: '#000000',
-			},
-			grid: {
-				vertLines: { color: '#eeeeee' },
-				horzLines: { color: '#eeeeee' },
-			},
-			crosshair: { mode: LightweightCharts.CrosshairMode.Normal },
-			rightPriceScale: { borderColor: '#cccccc', visible: true },
-			timeScale: {
-				borderColor: '#cccccc',
-				timeVisible: true,
-				secondsVisible: false,
-				rightOffset: 0,
-				barSpacing: 2,
-				minBarSpacing: 0,
-				fixLeftEdge: false,
-				handleScroll: { mouseWheel: true },
-			},
-		});
+        // ► Création du graphique avec LightweightCharts
+        const chartContainer = document.getElementById(BtcDivID);
+        const chart = LightweightCharts.createChart(chartContainer, {
+            width: chartContainer.clientWidth,
+            height: 500,
+            layout: {
+                background: { color: 'rgba(42, 48, 61, 0.6)' },
+                textColor: "#ffffffff"
+            },
+            grid: {
+                vertLines: { color: 'rgba(60, 63, 70, 0.6)' },
+                horzLines: { color: 'rgba(60, 63, 70, 0.6)' }
+            },
+            crosshair: {
+                mode: LightweightCharts.CrosshairMode.Normal,
+                vertLine: { color: '#cccccc', width: 1 },
+                horzLine: { color: '#cccccc', width: 1 }
+            },
+            priceScale: { borderVisible: true },
+            rightPriceScale: { borderColor: '#cccccc', visible: true },
+            timeScale: { borderColor: '#cccccc', timeVisible: true, secondsVisible: false, rightOffset: 0, barSpacing: 2, minBarSpacing: 0, fixLeftEdge: false },
+            handleScroll: { mouseWheel: true, pressedMouseMove: true },
+            handleScale: { mouseWheel: true, pinch: true, axisPressedMouseMove: true }
+        });
 
-		// ► Stockage global pour accès externe
-		window.chartInstance = chart;
+        // ► Stockage global
+        window.chartInstance = chart;
+        window.chartInstances[BtcDivID] = chart;
 
-		// ► Série principale (BTC)
-		const lineSeries = chart.addLineSeries({
-			color: 'blue',
-			lineWidth: 2,
-			priceFormat: {
-				type: 'custom',
-				formatter: price => currentScale === 'log' ? (Math.pow(10, price)).toFixed(2) : price.toFixed(2),
-			},
-		});
+        // ► Série principale (BTC)
+        const lineSeries = chart.addLineSeries({
+            color: '#9abaf7ff',
+            lineWidth: 2,
+            priceFormat: {
+                type: 'custom',
+                formatter: price => window.currentScale === 'log' ? (Math.pow(10, price)).toFixed(2) : price.toFixed(2),
+            },
+        });
+        window.btcLineSeries = lineSeries;
 
+        // ► Échelle actuelle
+        window.currentScale = 'log';
 
+        // ► Affichage initial
+        updateBTCChartData(lineSeries, chart, dataArith, dataLog, window.currentScale);
 
-		
+        // ► Ligne projetée rouge
+        const lastRealData = window.currentScale === 'arith'
+            ? dataArith[dataArith.length - 1]
+            : dataLog[dataLog.length - 1];
+        addProjectionLine(chart, lastRealData, window.currentScale);
 
-		// ► Échelle actuelle (globale)
-		window.currentScale = 'log';
+        // ► Gestion du sélecteur d’échelle
+        document.getElementById(scaleSelectorId).addEventListener('change', e => {
+            window.currentScale = e.target.value;
+            updateBTCChartData(lineSeries, chart, dataArith, dataLog, window.currentScale);
 
-		// ► Affichage initial
-		updateBTCChartData(lineSeries, chart, dataArith, dataLog, window.currentScale);
+            if (window.projectionSeries && window.projectionData) {
+                const projData = window.projectionData[window.currentScale];
+                window.projectionSeries.setData(projData);
+            }
+        });
 
+        // ► Redimensionnement dynamique
+        window.addEventListener('resize', () => {
+            chart.applyOptions({ width: chartContainer.clientWidth });
+        });
 
-		// Création de la ligne projetée rouge
-		const lastRealData = window.currentScale === 'arith'
-			? dataArith[dataArith.length - 1]
-			: dataLog[dataLog.length - 1];
+        // ► Message : chargement terminé
+        if (statusEl) statusEl.textContent = 'Données chargées — graphique BTC affiché';
 
-		addProjectionLine(chart, lastRealData, window.currentScale);
-
-
-		// ► Gestion du sélecteur d’échelle
-		document.getElementById('scaleSelector').addEventListener('change', e => {
-			window.currentScale = e.target.value;
-			updateBTCChartData(lineSeries, chart, dataArith, dataLog, window.currentScale);
-
-			// Mise à jour de la projection rouge quand l’échelle change
-			if (window.projectionSeries && window.projectionData) {
-				const projData = window.projectionData[window.currentScale];
-				window.projectionSeries.setData(projData);
-			}
-		});
-
-
-		// ► Redimensionnement dynamique
-		window.addEventListener('resize', () => {
-			chart.applyOptions({ width: document.getElementById('chartBTC').clientWidth });
-		});
-
-	} catch (e) {
-		alert(e.message);
-		console.error(e);
-	}
+    } catch (e) {
+        console.error(e);
+        if (statusEl) statusEl.textContent = 'Erreur chargement données BTC — voir console';
+    }
 }
+
 
 
 // 1.7 :
 // ===================================================================================================================================
 //                                // INIT : Lancement initial du graphique BTC
 
+document.addEventListener("DOMContentLoaded", () => {
+    const charts = [
+        { divId: "chartBTC1", scaleId: "scaleSelector1" },
+        { divId: "chartBTC2", scaleId: "scaleSelector2" },
+        { divId: "chartBTC3", scaleId: "scaleSelector3" },
+        { divId: "chartBTC4", scaleId: "scaleSelector4" }
+    ];
 
-drawBTCChart();
-
-
-
-chartInstance
+    charts.forEach(c => {
+        if (document.getElementById(c.divId)) {
+            drawBTCChart(c.divId, c.scaleId);
+        }
+    });
+});
