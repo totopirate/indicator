@@ -2,7 +2,7 @@
 
 // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------  
 
-// cbbi-chart-fibo.js
+// indicator-main/Cbbi/cbbi-chart-fibo.js
 // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -41,36 +41,34 @@ let cbbiColoredSeries = [];                                                     
     
 let cbbiBaseSeries;                                                                                // ici baseSeries en cbbiBaseSeries
  
-// Couleurs des zones Fibonacci (rgba + alpha)
-let zoneColors = [{
-	color: 'rgba(216, 176, 240, 0.9)',
-	alpha: 0.9
-}, {
-	color: 'rgba(233, 157, 15, 0.9)',
-	alpha: 0.9
-}, {
-	color: 'rgba(201, 201, 38, 0.9)',
-	alpha: 0.9
-}, {
-	color: 'rgba(43, 146, 23, 0.9)',
-	alpha: 0.9
-}, {
-	color: 'rgba(9, 217, 245, 0.9)',
-	alpha: 0.9
-}, {
-	color: 'rgba(107, 145, 224, 0.9)',
-	alpha: 0.9
-}, {
-	color: 'rgba(216, 11, 11, 0.9)',
-	alpha: 0.9
-}, {
-	color: 'rgba(164, 164, 165, 0.9)',
-	alpha: 0.9
-}, {
-	color: 'rgba(0, 0, 0, 0.9)',
-	alpha: 0.9
-}, ];
 
+// Couleurs des zones Fibonacci (rgba + alpha)
+
+//couleur des segment de value cbbi en directe 
+let zoneColors1 = [
+    { color: 'rgba(203, 134, 243, 0.9)', alpha: 0.9 },
+    { color: 'rgba(233, 157, 15, 0.9)', alpha: 0.9 },
+    { color: 'rgba(201, 201, 38, 0.9)', alpha: 0.9 },
+    { color: 'rgba(43, 146, 23, 0.9)', alpha: 0.9 },
+    { color: 'rgba(9, 217, 245, 0.9)', alpha: 0.9 },
+    { color: 'rgba(107, 145, 224, 0.9)', alpha: 0.9 },
+    { color: 'rgba(216, 11, 11, 0.9)', alpha: 0.9 },
+    { color: 'rgba(164, 164, 165, 0.9)', alpha: 0.9 },
+    { color: 'rgba(255, 255, 255, 0.9)', alpha: 0.9 },
+];
+
+//couleur des ligne horizontale value cbbi fixe 
+let zoneColors2 = [
+    { color: 'rgba(203, 134, 243, 0.5)', alpha: 0.9 },
+    { color: 'rgba(233, 157, 15, 0.5)', alpha: 0.9 },
+    { color: 'rgba(201, 201, 38, 0.5)', alpha: 0.9 },
+    { color: 'rgba(43, 146, 23, 0.5)', alpha: 0.9 },
+    { color: 'rgba(9, 217, 245, 0.5)', alpha: 0.9 },
+    { color: 'rgba(107, 145, 224, 0.5)', alpha: 0.9 },
+    { color: 'rgba(216, 11, 11, 0.5)', alpha: 0.9 },
+    { color: 'rgba(164, 164, 165, 0.5)', alpha: 0.9 },
+    { color: 'rgba(255, 255, 255, 0.5)', alpha: 0.9 },
+];
 
 
 // 1.2 :
@@ -105,22 +103,24 @@ async function fetchAndDrawChart() {
 	// Création du graphique avec LightweightCharts
 	cbbiChart = LightweightCharts.createChart(document.getElementById("chartCBBI"), {                  // ici chart en cbbiChart
 		width: document.getElementById("chartCBBI").clientWidth,
+		
 		height: 500,
 		layout: {
 			background: {
-				color: "#fff"
+				color: 'rgba(42, 48, 61, 0.6)'        
 			},
-			textColor: "#000"
+			textColor: "#fff"
 		},
 		grid: {
 			vertLines: {
-				color: "#eee"
+				color: 'rgba(60, 63, 70, 0.6)' 
 			},
 			horzLines: {
-				color: "#eee"
+				color: 'rgba(60, 63, 70, 0.6)' 
 			}
 		},
 		timeScale: {
+			borderColor: '#cccccc',
 			timeVisible: true,
 			secondsVisible: false,
 			rightOffset: 50,
@@ -139,14 +139,15 @@ async function fetchAndDrawChart() {
 		priceScale: {
 			borderVisible: true
 		},
+		rightPriceScale: { borderColor: '#cccccc', visible: true },
 		crosshair: {
 			mode: LightweightCharts.CrosshairMode.Normal,
 			vertLine: {
-				color: 'rgba(0,0,0,0.5)',
+				color: '#cccccc',
 				width: 1
 			},
 			horzLine: {
-				color: 'rgba(0,0,0,0.5)',
+				color: '#cccccc',
 				width: 1
 			},
 		},
@@ -158,7 +159,7 @@ async function fetchAndDrawChart() {
 
 	// Ajout de la série principale en ligne bleue
 	cbbiBaseSeries = cbbiChart.addLineSeries({                                                     // ici chart en cbbiChart  // ici baseSeries en cbbiBaseSeries
-		color: 'blue',
+		color: '#9abaf7ff',
 		lineWidth: 2
 	});
 	cbbiBaseSeries.setData(data);
@@ -167,26 +168,38 @@ async function fetchAndDrawChart() {
 
 
 
-	// Bouton pour dessiner la ligne Fibonacci avec les valeurs saisies
-	document.getElementById('btnDrawFibo').onclick = () => {
-		const value1 = parseFloat(document.getElementById('value1').value);
-		const value2 = parseFloat(document.getElementById('value2').value);
-		if (isNaN(value1) || isNaN(value2)) {
-			alert("Merci de renseigner deux valeurs numériques valides.");
-			return;
+
+	// Bouton unique pour tracer / supprimer Fibonacci
+	let fiboActive = false;
+	const btn = document.getElementById('btnToggleFibo');
+
+	btn.onclick = () => {
+		if (!fiboActive) {
+			const value1 = parseFloat(document.getElementById('value1').value);
+			const value2 = parseFloat(document.getElementById('value2').value);
+			if (isNaN(value1) || isNaN(value2)) {
+				alert("Merci de renseigner deux valeurs numériques valides.");
+				return;
+			}
+
+			drawFibonacciColoredLine(value1, value2, data);
+			fiboActive = true;
+
+			// Styles universels
+			btn.classList.remove("off");
+			btn.classList.add("on");
+			btn.textContent = "Supprimer Fibo";
+
+		} else {
+			clearFibonacci();
+			fiboActive = false;
+
+			btn.classList.remove("on");
+			btn.classList.add("off");
+			btn.textContent = "Tracer Fibo";
 		}
-
-		// Stockage global temporaire des prix pour réutilisation
-		window._fibPrice1 = value1;
-		window._fibPrice2 = value2;
-		drawFibonacciColoredLine(value1, value2, data);
 	};
 
-
-	// Bouton pour effacer toutes les lignes Fibonacci et zones colorées
-	document.getElementById('btnClearFibo').onclick = () => {
-		clearFibonacci();
-	};
 
 
 	// Stocke cbbiMap global dès chargement du graphique principal
@@ -208,6 +221,10 @@ window.addEventListener('resize', () => {
 		cbbiChart.resize(document.getElementById('chartCBBI').clientWidth, 500);                       // ici chart en cbbiChart 
 	}
 });
+
+
+
+
 
 
 // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------              
@@ -250,20 +267,23 @@ function drawFibonacciColoredLine(price1, price2, data) {
   const maxPrice = Math.max(price1, price2);
   const minPrice = Math.min(price1, price2);
 
-  levels.forEach(level => {
-    const fibPrice = maxPrice - (maxPrice - minPrice) * (1 - level);
+	levels.forEach((level, index) => {
+		const fibPrice = maxPrice - (maxPrice - minPrice) * (1 - level);
 
-    const line = cbbiBaseSeries.createPriceLine({
-      price: fibPrice,
-      color: 'rgba(255,0,0,0.7)',
-      lineWidth: 1,
-      lineStyle: LightweightCharts.LineStyle.Solid,
-      axisLabelVisible: true,
-      title: `Fib ${(level * 100).toFixed(1)}%`,
-    });
+		// Couleur Fibo = zoneColors2
+		const fibColor = zoneColors2[index]?.color || 'rgba(255,255,255,0.4)';
 
-    cbbiFibLines.push(line);
-  });
+		const line = cbbiBaseSeries.createPriceLine({
+			price: fibPrice,
+			color: fibColor,      // ← 📌 couleur transparente
+			lineWidth: 2,
+			lineStyle: LightweightCharts.LineStyle.Solid,
+			axisLabelVisible: true,
+			title: `Fib ${(level * 100).toFixed(1)}%`,
+		});
+
+		cbbiFibLines.push(line);
+	});
 
   const fibPrices = levels.map(level => maxPrice - (maxPrice - minPrice) * (1 - level));
 
@@ -326,7 +346,7 @@ function drawFibonacciColoredLine(price1, price2, data) {
   	console.log(`Zone Fibo CBBI créés : ${segments.length}`);
 
   segments.forEach(({ zone, points }) => {
-    const rgbaColor = zoneColors[zone] ? zoneColors[zone].color : 'rgba(0,0,0,0.4)';
+    const rgbaColor = zoneColors1[zone] ? zoneColors1[zone].color : 'rgba(0,0,0,0.4)'; 
 
     const series = cbbiChart.addLineSeries({
       color: rgbaColor,
