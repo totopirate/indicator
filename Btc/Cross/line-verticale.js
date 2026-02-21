@@ -2,22 +2,22 @@
 
 // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------  
 
-// line-verticale.js
+// indicator-main/Btc/Cross/line-verticale.js
 // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-//                                              3 : ( 3.1 , 3.2 , 3.3 )
+//                                              2 : ( 2.1 , 2.2 , 2.3 )
 //                                              // GESTION DES LINE VERTICAL HALVING DU : BTC :
 
 // ===================================================================================================================================
-//                                3.1 :
+//                                2.1 :
 //                                // Ajoute ou supprime les lignes verticales des croisements alternatifs sur le graphique BTC
 // ===================================================================================================================================
-//                                3.2 :
+//                                2.2 :
 //                                // Ecouteur bouton clic
 // ===================================================================================================================================
-//                                3.3 :
+//                                2.3 :
 //                                // Données croisements alternatifs intégrées
 // ===================================================================================================================================
 
@@ -25,7 +25,7 @@
 
 
 
-//  3.1 :
+//  2.1 :
 // ===================================================================================================================================
 //                                // Ajoute ou supprime les lignes verticales des croisements alternatifs sur le graphique BTC
 
@@ -71,20 +71,42 @@ function toggleAltCrossingLines(chart, currentScale) {
 
 
 
-//  3.2 :
+// 2.2 :
 // ===================================================================================================================================
-//                                // Ecouteur bouton clic
+//                                // Ecouteur bouton clic (paramétrable par ID)
 
-document.getElementById('toggleAltBtn').addEventListener('click', () => {
-  if (window.chartInstance) {
-    toggleAltCrossingLines(window.chartInstance, window.currentScale);
-  } else {
-    console.warn('Le graphique BTC n’est pas encore initialisé.');
-  }
+// Stockage global pour tous les graphiques
+window.chartInstances = {}; // clé = divId, valeur = chart
+
+// Fonction d'initialisation d'un bouton toggle
+function initToggleAltBtn(toggleAltBtnId, chartDivId) {
+    const btn = document.getElementById(toggleAltBtnId);
+    if (!btn) return;
+
+    btn.addEventListener('click', () => {
+        const chart = window.chartInstances[chartDivId]; // on récupère le graphique correspondant
+        if (!chart) {
+            console.warn(`Graphique ${chartDivId} non trouvé.`);
+            return;
+        }
+        toggleAltCrossingLines(chart, window.currentScale);
+    });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    const toggleBtns = [
+		{ btnId: "toggleAltBtn1", chartDivId: "chartBTC1" },
+        { btnId: "toggleAltBtn2", chartDivId: "chartBTC2" },
+        { btnId: "toggleAltBtn3", chartDivId: "chartBTC3" },
+        { btnId: "toggleAltBtn4", chartDivId: "chartBTC4" }
+    ];
+
+    toggleBtns.forEach(b => {
+        initToggleAltBtn(b.btnId, b.chartDivId);
+    });
 });
 
-
-//  3.3 :
+//  .3 :
 // ===================================================================================================================================
 //                                // Données croisements alternatifs intégrées
 
