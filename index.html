@@ -2,41 +2,42 @@
 
 <!-- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------>
 
-<!-- dashboard.html                                                                                                                                                                          --> 
+<!-- indicator-main/index1.html                                                                                                                                                                          --> 
 <!-- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------>
 
 
 <!-- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------>
-<!--                                       1 , 2 , 3 , 4 , 5 , 6 , 7                                                                                                                         -->
+<!--                                       1 , 2 , 3 , 4 , 5 , 6 , 7 , 8                                                                                                                       -->
 <!--                                       // GESTION DE LA PAGE PRINCIPALE GOOGLE  :                                                                                                        -->                               
 
 
 <!-- ======================================================================================================================== -->
 <!--                                       1 : STYLES GÉNÉRAUX                                                                -->
-<!--                                                                                                                          -->                                         
+<!--                                                                                                                          -->                                                                                  
 <!-- ======================================================================================================================== -->
-<!--                                       2 : TITRE PRINCIPAL DU DASHBOARD                                                   -->
-<!--                                                                                                                          -->                                            
-<!-- ======================================================================================================================== -->
-<!--                                       3 : GRAPHIQUES CBBI / FOOTER - CONTRÔLES POUR LA SÉLECTION DES VALEURS FIBONACCI   -->
+<!--                                       2 : PANEAUX CONFIG DATA (TRIE AFICHAGE DES DONNEE)                                 -->
 <!--                                                                                                                          -->   
 <!-- ======================================================================================================================== -->
-<!--                                       4 : GRAPHIQUES BTC / FOOTER - CONTRÔLES DES MODES ET ÉCHELLES                      -->
+<!--                                       3 : GRAPHIQUES BTC / FOOTER - CONTRÔLES DES MODES ET ÉCHELLES                      -->
+<!--                                                                                                                          -->   
+<!-- ======================================================================================================================== -->
+<!--                                       4 : GRAPHIQUES CBBI / FOOTER - CONTRÔLES POUR LA SÉLECTION DES VALEURS FIBONACCI   -->
 <!--                                                                                                                          -->   
 <!-- ======================================================================================================================== -->                                         
 <!--                                       5 : GRAPHIQUES CFGI / FOOTER - CONTRÔLES AFFICHAGE                                 -->                                         
-<!--                                                                                                                          -->     
+<!--                                                                                                                          -->    
+<!-- ======================================================================================================================== -->                                         
+<!--                                       6 : GRAPHIQUES RSI / FOOTER - CONTRÔLES AFFICHAGE                                  -->                                         
+<!--                                                                                                                          -->  
 <!-- ======================================================================================================================== -->
-<!--                                       6 : EXPLICATION / EDUCATIONS                                                       -->
+<!--                                       7 : EXPLICATION / EDUCATIONS                                                       -->
 <!--                                                                                                                          -->   
 <!-- ======================================================================================================================== -->
-<!--                                       7 : SCRIPTS IMPORTÉS (MODULES JS)                                                  -->
+<!--                                       8 : SCRIPTS IMPORTÉS (MODULES JS)                                                  -->
 <!--                                                                                                                          -->   
 <!-- ======================================================================================================================== -->
 
-
-
-
+ 
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -52,30 +53,76 @@
   <!-- ======================================================================================================================== -->
 
 
-  <style>
+
+<style>
+
     body { 
-      font-family: Arial, sans-serif; 
+      font-family: 'Inter', Arial, sans-serif; 
       margin: 20px; 
-      background-color: #cfcfda; 
+      background-color: #020617; /* DA couleur de fond */
+      color: #e5e7eb; /* DA couleur du texte */
       min-height: 150vh;
       display: flex;
       flex-direction: column;
     }
 
-    #chartBTC {
-      width: 100%; 
-      height: 500px; 
-      margin-top: 20px;
-      flex-shrink: 0;
-      background: white;
-      border: 1px solid #ccc;
+
+    label, input, select {
+      margin: 5px; 
+      font-size: 14px;
+      color: #94a3b8; /* DA couleur label */
+    }
+
+    input,
+    select {
+      background: rgba(30, 41, 59, 0.7);
+      border: 1px solid #334155;
+      color: #f1f5f9;
+      padding: 8px 12px;
+      border-radius: 10px;
+      outline: none;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: #22d3ee;
+      box-shadow: 0 0 0 1px rgba(34, 211, 238, 0.3);
+    }
+
+    button {
+      margin: 5px;
+      background: linear-gradient(180deg, rgba(34, 211, 238, 0.25));
+      color: #d6d1d1;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
     }
 
 
 
-    label, input, button, select {
-      margin: 5px; 
+    button.active {
+      margin: 5px;
+      background: linear-gradient(180deg, #22d3ee, #06b6d4);
+      color: #020617;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 12px;
       font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+
+
+
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 25px rgba(34, 211, 238, 0.25);
     }
 
     #spacer {
@@ -83,10 +130,10 @@
     }
 
     footer {
-      background: #eeeef3; 
-      padding: 15px 20px;
-      border-radius: 6px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      background: rgba(22, 35, 63, 0.6);
+      padding: 15px 24px; /* DA padding plus large */
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -95,7 +142,6 @@
       margin-top: 20px;
     }
 
-    
     #colorControls {
       display: flex;
       flex-wrap: wrap;
@@ -112,6 +158,7 @@
       font-size: 13px;
       user-select: none;
       min-width: 140px;
+      color: #94a3b8;
     }
 
     #colorControls input[type=color] {
@@ -130,73 +177,110 @@
     .opacity-label {
       min-width: 50px;
       font-size: 12px;
-      color: #444;
+      color: #cbd5f5;
       user-select: none;
     }
 
     #scaleControlWrapper {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 12px;
       white-space: nowrap;
       min-width: 140px;
       user-select: none;
     }
-  </style>
+
+.legend-overlay {
+  position: fixed;
+
+  top: 20px;
+
+  background: rgba(30, 30, 30, 0.95);
+  color: #fff;
+  padding: 15px;
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 1.5;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  display: none; /* masqué par défaut */
+  z-index: 9999;
+}
+
+.legend-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.legend-color {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  margin-right: 6px;
+  border-radius: 3px;
+  border: 1px solid #fff;
+}
+
+    
+
+    
+</style>
+  
 </head>
 
 
 <body>
 
+
+  <a href="index2.html">
+    <button>Aller à la page suivante</button>      <!-- test double page a voir (pas necesaire) -->  
+  </a>
+
+
   <!-- ======================================================================================================================== -->
-  <!--                                       2 : TITRE PRINCIPAL DU DASHBOARD                                                   -->
+  <!--                                       2 : PANEAUX CONFIG DATA (TRIE AFICHAGE DES DONNEE)                                 -->                                  
   <!-- ======================================================================================================================== -->
 
 
-  <footer >
-  <h2> 1 - Graphique CBBI + Fibonacci retracement <br> 2 - Graphique BTC +  Mode Color Fibo <br> 3 - Crypto Fear & Greed Index </h2>
+  <footer> 
+
+
+    <h2> 0 - Paneaux configuration data   </h2>   
+
+      <button id="btnToggleMode1Data">Masquer DATA 1 ( BTC Chart )</button>    
+
+      <button id="btnToggleMode2Data">Masquer DATA 2 ( CBBI Chart )</button>
+
+      <button id="btnToggleMode3Data">Masquer DATA 3 ( CFGI Chart )</button>
+
+      <button id="btnToggleMode4Data">Masquer DATA 4 ( RSI Chart )</button>
+
+      <br>
+
   </footer>
 
-
-
   <!-- ======================================================================================================================== -->
-  <!--                                       3 : GRAPHIQUES CBBI / FOOTER - CONTRÔLES POUR LA SÉLECTION DES VALEURS FIBONACCI   -->
+  <!--                                       3 : GRAPHIQUES BTC / FOOTER - CONTRÔLES DES MODES ET ÉCHELLES                      -->                                  
   <!-- ======================================================================================================================== -->
 
 
-  <footer>
-  <div>
-    <label for="value1">Valeur Cbbi Fibo point 1 :</label>
-    <input type="number" id="value1" step="0.01" value="100" />
-    <label for="value2">Valeur Cbbi Fibo point 2 :</label>
-    <input type="number" id="value2" step="0.01" value="0.45" />
+  <footer id="section-btc">
 
+    <h2> 1 - Graphique BTC +  Mode Color  </h2>   
+    
+    
 
-    <!-- Bouton -->
-    <button id="btnDrawFibo">Tracer Fibonacci</button>
-    <button id="btnClearFibo">Supprimer Fibonacci</button>
-    <!-- Bouton -->
-  </div>
+    <!-- Conteneur des messages de statut -->
+    <div id="status-btc" style="margin-left:auto;color:#94a3b8;font-size:13px;align-self:center">Chargement des données...</div>    
 
+    <div id="chartBTC1" style="width: 100%; height: 500px; " > </div>   <!--  ajout Graphique BTC  -->  
 
-  <div id="chartCBBI" style="width: 100%; height: 500px;" > </div>       <!--  ajout Graphique CBBI  -->
-  </footer>
-
-
-  <!-- ======================================================================================================================== -->
-  <!--                                       4 : GRAPHIQUES BTC / FOOTER - CONTRÔLES DES MODES ET ÉCHELLES                      -->                                  
-  <!-- ======================================================================================================================== -->
-
-
-  <footer>
-
-    <div id="chartBTC" style="width: 100%; height: 500px; " > </div>   <!--  ajout Graphique BTC  -->  
 
     
       <div id="scaleControlWrapper">
         <div id="scaleLabelSelectWrapper">
-          <label for="scaleSelector">Échelle BTC :</label>
-          <select id="scaleSelector">
+          <label for="scaleSelector1">Échelle BTC :</label>
+          <select id="scaleSelector1">
             <option value="log">Logarithmique</option>
             <option value="arith">Arithmétique</option>
           </select>
@@ -204,35 +288,54 @@
 
         <!-- Bouton -->
 
-        <button id="toggleAltBtn">                                                               <!--  Bouton halving date                     -->
-          Afficher / Masquer Date-Halving
-        </button>
-
+        <button id="toggleAltBtn1"> Afficher / Masquer Date-Halving </button>                     <!--  Bouton halving date -->
 
         <button id="toggleCBBIonBTC">Afficher mode 1 ( Zone-Fibo-Cbbi ) </button>                <!--  Bouton zone-fibo-cbbi ( mode 1 )        -->                  
 
-        <button id="toggleCBBIonBTC4">Afficher mode 2 ( Zone-Fibo-Cycle-Cbbi ) </button>         <!--  Bouton zone-fibo-cycle-cbbi ( mode 2 )  --> 
+        <button id="toggleCBBIonBTC4">Afficher mode 2 ( Zone-Fibo-Cycle-Cbbi ) </button>         <!--  Bouton zone-fibo-cycle-cbbi ( mode 2 )  -->       
 
         <button id="toggleCFGIonBTC">Afficher  Mode 3 ( Zone-Sentiment-Cfgi )</button>           <!--  Bouton cfgi ( mode cfgi )               --> 
                          
-        <!-- Bouton -->
+        <button id="toggleRSIonBTC">Afficher  mode 4 ( Zone-Rsi-Mensuelle ) </button>                      <!--  Bouton cfgi ( mode cfgi )               --> 
+
+       <!-- Bouton -->
+        
 
 
       </div>
 
-      <div id="assetControlWrapper">
-          <div id="assetLabelSelectWrapper">
-              <label for="assetSelector">Actif :</label>
-              <select id="assetSelector">
-                  <option value="BTC">Bitcoin (BTC)</option>
-                  <option value="ETH">Ethereum (ETH)</option>                                    <!-- gestion multi-actif -->
-                  <option value="BNB">BNB (BNB)</option>
-                  <option value="SOL">Solana (SOL)</option>
-              </select>
-          </div>
-      </div>
 
-  </footer> <br>
+  </footer> 
+
+  <!-- ======================================================================================================================== -->
+  <!--                                       4 : GRAPHIQUES CBBI / FOOTER - CONTRÔLES POUR LA SÉLECTION DES VALEURS FIBONACCI   -->
+  <!-- ======================================================================================================================== -->
+
+
+  <footer id="section-cbbi">
+
+
+
+    <h2> 2 - Graphique CBBI + Fibonacci retracement  </h2>
+
+    <div id="chartCBBI" style="width: 100%; height: 500px;" > </div>       <!--  ajout Graphique CBBI  -->
+
+    <div>
+      <label for="value1">Valeur Cbbi Fibo point 1 :</label>
+      <input type="number" id="value1" step="0.01" value="99.98" />
+      <label for="value2">Valeur Cbbi Fibo point 2 :</label>
+      <input type="number" id="value2" step="0.01" value="0.53" />
+
+
+      <!-- Bouton -->
+      <button id="btnToggleFibo" class="chart-btn off">Tracer Fibo</button>
+      <!-- Bouton -->
+    </div>
+
+
+
+
+  </footer>  
 
 
   <!-- ======================================================================================================================== -->
@@ -240,23 +343,17 @@
   <!-- ======================================================================================================================== -->
 
 
+  <footer id="section-cfgi">
 
-  
-
-
-  <footer>
+    <h2> 3 - Crypto Fear & Greed Index  </h2>       
 
     <div id="chartCFGI" style="width: 100%; height: 500px;"></div>  <!--  ajout Crypto Fear & Greed Index -->
 
     <div> 
-      <label for="value1">Valeur max  :</label>
-      <input type="number" id="value1CFGI" step="0.01" value="100" />
-      <label for="value2">Valeur min :</label>
-      <input type="number" id="value2CFGI" step="0.01" value="0" />
+
 
       <!-- Bouton -->
-      <button id="btnDrawFiboCFGI">Tracer zones </button>
-      <button id="btnClearFiboCFGI">Supprimer zones </button>
+      <button id="btnToggleFiboCFGI" class="chart-btn off">Tracer Zones CFGI</button>
       <!-- Bouton -->
 
     </div>
@@ -265,22 +362,163 @@
   </footer>
 
 
+  <!-- ======================================================================================================================== -->
+  <!--                                       6 : GRAPHIQUES RSI / FOOTER - CONTRÔLES AFFICHAGE                                 -->
+  <!-- ======================================================================================================================== -->
+
+
+  <footer id="section-rsi">
+
+    <h2> 4 - RSI Mensuelle  </h2>    
+
+    <div id="status" style="margin-left:auto;color:#94a3b8;font-size:13px;align-self:center">Chargement des données...</div>
+    <div id="rsi-chart" style="width: 100%; height: 500px;"></div>  <!--  ajout Crypto Fear & Greed Index -->
+
+
+      <!-- Bouton -->      
+        <div id="rsiControls" style="margin-top:10px; display:flex; gap:8px;">
+          <button id="btnToggleColor">Tracer Color</button>
+          <button id="btnLegend">Légende</button>
+        </div>
+      <!-- Bouton -->
+
+        <!-- Overlay légende -->
+        <div id="legendOverlay" class="legend-overlay" aria-hidden="true">
+
+
+
+          
+          <br><br>
+
+          <div class="legend-row"><span class="legend-color" style="background:#ffffff"></span> 0–20 : Extrêmement survendu . .</div>
+          <div class="legend-row"><span class="legend-color" style="background:#811aca"></span> 20–30 : Fortement survendu . .</div>
+          <div class="legend-row"><span class="legend-color" style="background:#0000ff"></span> 30–40 : Survendu . .</div>
+          <div class="legend-row"><span class="legend-color" style="background:#00bfff"></span> 40–50 : Légèrement survendu . .</div>
+          <div class="legend-row"><span class="legend-color" style="background:#00ff7f"></span> 50–60 : Légèrement suracheté . .</div>
+          <div class="legend-row"><span class="legend-color" style="background:#ffff00"></span> 60–70 : Suracheté . .</div>
+          <div class="legend-row"><span class="legend-color" style="background:#ffa500"></span> 70–80 : Fortement suracheté . .</div>
+          <div class="legend-row"><span class="legend-color" style="background:#ff0000"></span> 80–90 : Très fortement suracheté . .</div>
+          <div class="legend-row"><span class="legend-color" style="background:#a3a0a0"></span> 90–100 : Extrêmement suracheté</div>
+
+          <br><br>
+        </div>
+
   
 
+  </footer>
 
+    
 
 
   <!-- ======================================================================================================================== -->
-  <!--                                       6 : ( 6.1 , 6.2 , 6.3 )                                                            -->  
-  <!--                                       6 : EXPLICATION / EDUCATIONS                                                       -->
+  <!--                                       7 : ( 6.1 , 6.2 , 6.3 , 6.4 )                                                      -->  
+  <!--                                       7 : EXPLICATION / EDUCATIONS                                                       -->
   <!-- ======================================================================================================================== -->
 
 
     <!-- ======================================================================================================================== -->
-    <!--                                       6.1 : 🔎 Qu’est-ce que le CBBI ?                                                   -->
+    <!--                                       7.1 : 📊 Utilisation du projet CBBI + Zones Fibonacci                              -->
     <!-- ======================================================================================================================== -->
 
-      <footer>   
+      <footer>
+
+        <details> 
+ 
+          <summary> <h2> 📊 Utilisation du projet CBBI + Zones Fibonacci </h2> </summary>
+
+            <p> Ce projet permet de visualiser les cycles du marché Bitcoin grâce à l’indicateur CBBI combiné aux zones de retracement de Fibonacci. Il propose deux modes d’analyse : </p>
+
+            <ol>
+
+              <br> 
+                 <strong> Graphique du CBBI </strong> <br>  
+
+                <br> - Affiche le CBBI avec les niveaux de Fibonacci ( 0 , 0.146 , 0.236 , 0.382 , 0.5 , 0.618 , 0.786 , 0.854 , 0.90 , 1 ) et colore les segments selon leur zone. <br>
+                
+                <br> - Ce mode permet aussi de voir si le CBBI réagit en touchant ces zones de fibo.         <br>
+              <br> 
+
+              <br> 
+                 <strong> Graphique du BTC </strong> <br> 
+
+                <br> - Affiche le prix du Bitcoin avec une coloration selon le mode de zones Fibonacci du CBBI sélectionné, pour mieux comprendre les phases du marché. <br>
+              <br> 
+
+              <br> 
+                 <strong> Graphique du CFGI </strong> <br> 
+
+                <br> - Affiche la valeur du CFGI ainsi que ces zone de sentiment. <br>
+              <br> 
+
+
+              <br> 
+                <li> <strong> Mode 1 “ Zone-Fibo-CBBI ” </strong> <br> </li>
+
+                <br> - Affiche au prix du Bitcoin la coloration des zones Fibonacci du CBBI.                                                                <br>
+
+                <br> - Permet de representer visuelement les corelation entre le CBBI touchant ces zones de fibo et l’impact que cela a sur le prix du BTC. <br>
+              <br> 
+              
+
+              <br> 
+                <li> <strong> Mode 2 “ Zones-Fibo-Cycle-CBBI ” </strong> <br> </li>
+                                
+                <br> - Affiche au prix du Bitcoin la coloration des zones Fibonacci ( 0 , 14.6 , 85.4 , 100 ) du CBBI. <br>
+
+                <br> - Simplifie la lecture des cycles :                                                               <br>
+
+                <ul>
+
+                  <p> <li> <span style="color:rgba(216, 176, 240, 1);" ><strong>⚪ Zone 0 → 14.6    </strong></span> : Potentiel plus bas de cycle baissier.  </li> </p>
+                  <p> <li> <span style="color:rgba(100, 220, 100, 0.9);" ><strong>🟢 Zone 14.6 → 85.4 </strong></span> : Phase haussière du cycle (selon dynamique).              </li> </p>
+                  <p> <li> <span style="color:rgba(255, 255, 255, 0.9);" ><strong>⚪ Zone 85.4 → 100  </strong></span> : Potentiel plus haut de cycle haussier. </li> </p>
+                  <p> <li> <span style="color:rgb(180, 26, 15);"         ><strong>🔴 Phase 85.4 → 14.6 </strong></span> : Phase baissière du cycle lorsque la dynamique s’inverse.              </li> </p>
+                  
+                </ul>
+
+                <br> - Logique conditionnelle complémentaire (cycle sans extreme ): <br>
+
+                <ul>
+
+                  <p> <li> <span style="color:rgb(180, 26, 15);" ><strong>🔴 Sur-achat confirmé (78.6 → 50)</strong></span> : Après un passage au-dessus de 78.6, la coloration rouge débute si le niveau 50 est touché sans avoir a passer par les 85.4 . </li> </p>
+                  <p> <li> <span style="color:rgba(100, 220, 100, 0.9);" ><strong>🟢 Sur-vente confirmée (14.6 → 23.6)</strong></span> : Après un passage sous 14.6, la coloration verte débute si le niveau 23.6 est touché sans avoir a passer par les 14.6 . </li> </p>
+                  
+                </ul>
+
+              <br> 
+
+                <li> <strong> Mode 3 “ Zone-Sentiment-Cfgi  ” </strong> <br> </li>
+
+                <br> - Affiche au prix du Bitcoin les zones de sentiment du CFGI.                                                                <br>
+
+                <br> - Permet de representer visuelement le sentiment sur le prix du BTC. <br>
+              <br> 
+
+              <br> 
+
+                <li> <strong> Mode 4 “ Zone-RSI  ” </strong> <br> </li>
+
+                <br> - Affiche au prix du Bitcoin les zones du RSI.                                                                <br>
+
+                <br> - Apllication des zone de RSI sur le prix du BTC. <br>
+              <br>               
+
+
+            </ol>
+
+        </details>
+
+      </footer>
+
+    <!-- ======================================================================================================================== -->
+
+
+
+    <!-- ======================================================================================================================== -->
+    <!--                                       7.2 : 🔎 Qu’est-ce que le CBBI ?                                                   -->
+    <!-- ======================================================================================================================== -->
+
+      <footer id="explication-cbbi">   
 
         <details> 
 
@@ -289,7 +527,7 @@
             <section>
 
               <p>
-                Le CBBI (Crypto Bitcoin Bull Run Index) est un indice composite développé dans le but d’évaluer la maturité d’un cycle haussier du Bitcoin.
+                Le CBBI (Crypto Bitcoin Bull Run Index) est un indice composite développé par Colin talks Crypto et Kamil Monicz ( source : https://colintalkscrypto.com/cbbi/ ) dans le but d’évaluer la maturité d’un cycle haussier du Bitcoin.
                 <p>
                 Il fournit une valeur comprise entre 0 et 100 :
                 </p>
@@ -398,13 +636,13 @@
 
 
     <!-- ======================================================================================================================== -->
-    <!--                                       6.2 : 🔎 Qu’est-ce que le CFGI ?                                                   -->
+    <!--                                       7.3 : 🔎 Qu’est-ce que le CFGI ?                                                   -->
     <!-- ======================================================================================================================== -->
 
-      <footer>   
+      <footer id="explication-cfgi">   
 
         <details>
-          <summary><h2>📈 Qu’est-ce que le CFGI ?</h2></summary>
+          <summary><h2> 🔎 Qu’est-ce que le CFGI ?</h2></summary>
 
 
           <br>
@@ -418,9 +656,15 @@
                  <span style="color: rgb(224, 19, 19);" > indicateur synthétique</span>
                  conçu pour refléter le
                 <span style="color: rgb(224, 19, 19);" > sentiment global du marché des cryptomonnaies</span>.
+                <br>
+
                 Il fournit une <span style="color: rgb(224, 19, 19);" > valeur comprise entre 0 et 100</span>,
                  mise à jour quotidiennement, dans le but d'aider les investisseurs
                 à mieux comprendre l’état émotionnel dominant du marché.
+                <br><br>
+
+                L'indice original Fear & Greed était un indicateur clé du marché développé par CNN Money 
+                pour mesurer l'impact de ces deux émotions humaines sur le marché boursier.
               </p>
             </h4>
 
@@ -536,83 +780,68 @@
 
     <!-- ======================================================================================================================== -->
 
-
     <!-- ======================================================================================================================== -->
-    <!--                                       6.3 : 📊 Utilisation du projet CBBI + Zones Fibonacci                              -->
+    <!--                                       7.4 : 🔎 Qu’est-ce que le RSI ?                                                   -->
     <!-- ======================================================================================================================== -->
 
-      <footer>
+    <footer id="explication-rsi"> 
+      <details>  
 
-        <details>
+        <summary> <h2> 🔎 Qu'est-ce que le RSI Mensuel ? </h2> </summary> 
 
-          <summary> <h2> 📊 Utilisation du projet CBBI + Zones Fibonacci </h2> </summary>
+        <section>
 
-            <p> Ce projet permet de visualiser les cycles du marché Bitcoin grâce à l’indicateur CBBI combiné aux zones de retracement de Fibonacci. Il propose deux modes d’analyse : </p>
+          <p>
+            Le <strong>RSI (Relative Strength Index)</strong> est un indicateur de momentum développé par J. Welles Wilder.
+            Il mesure la vitesse et l’intensité des variations de prix afin d’évaluer les situations de 
+            <strong>surachat</strong> ou de <strong>survente</strong>.
+          </p>
 
-            <ol>
+          <p>
+            Le RSI oscille sur une échelle comprise entre <strong>0 et 100</strong>.
+          </p>
 
-              <br> 
-                 <strong> Graphique du CBBI </strong> <br>  
+        </section>
 
-                <br> - Affiche le CBBI avec les niveaux de Fibonacci ( 0 , 0.146 , 0.236 , 0.382 , 0.5 , 0.618 , 0.786 , 0.854 , 0.90 , 1 ) et colore les segments selon leur zone. <br>
-                
-                <br> - Ce mode permet aussi de voir si le CBBI réagit en touchant ces zones de fibo.         <br>
-              <br> 
+        <br>
 
-              <br> 
-                 <strong> Graphique du BTC </strong> <br> 
+        <section>
 
-                <br> - Affiche le prix du Bitcoin avec une coloration selon le mode de zones Fibonacci du CBBI sélectionné, pour mieux comprendre les phases du marché. <br>
-              <br> 
+          <h2>📊 Interprétation générale du RSI</h2>
 
-              <br> 
-                 <strong> Graphique du CFGI </strong> <br> 
+          <ul>
+            <li><strong>RSI &lt; 30</strong> : Zone de survente – pression vendeuse excessive, potentiel de rebond.</li>
+            <li><strong>RSI ≈ 50</strong> : Zone d’équilibre – marché neutre.</li>
+            <li><strong>RSI &gt; 70</strong> : Zone de surachat – pression acheteuse excessive, risque de correction.</li>
+          </ul>
 
-                <br> - Affiche la valeur du CFGI ainsi que ces zone de sentiment. <br>
-              <br> 
+          <p>
+            Sur une unité mensuelle, ces zones prennent une importance particulière :
+            les extrêmes historiques du RSI mensuel ont souvent coïncidé avec
+            des bas ou des sommets majeurs de cycle.
+          </p>
 
+        </section>
 
-              <br> 
-                <li> <strong> Mode 1 “ Zone-Fibo-CBBI ” </strong> <br> </li>
+        <br>
 
-                <br> - Affiche au prix du Bitcoin la coloration des zones Fibonacci du CBBI.                                                                <br>
+        <section>
 
-                <br> - Permet de representer visuelement les corelation entre le CBBI touchant ces zones de fibo et l’impact que cela a sur le prix du BTC. <br>
-              <br> 
-              
+          <h2>🌈 Lecture des zones arc-en-ciel</h2>
 
-              <br> 
-                <li> <strong> Mode 2 “ Zones-Fibo-Cycle-CBBI ” </strong> <br> </li>
-                
-                <br> - Affiche au prix du Bitcoin la coloration des zones Fibonacci ( 0 , 0.146 , 0.854 , 1 ) du CBBI. <br>
+          <p>
+            Dans ce projet, le RSI est représenté sous forme de <strong>zones colorées progressives</strong>
+            afin de visualiser l’intensité du momentum de manière intuitive.
+          </p>
 
-                <br> - Simplifie la lecture des cycles :                                                               <br>
+        </section>
 
-                <ul>
+        <br>
 
-                  <p> <li> <span style="color:rgba(216, 176, 240, 0.9);" ><strong>⚪ Zone 0 → 14.6    </strong></span> : Potentiel plus bas de cycle baissier.  </li> </p>
-                  <p> <li> <span style="color:rgba(100, 220, 100, 0.9);" ><strong>🟢 Zone 14.6 → 85.4 </strong></span> : Phase haussière du cycle.              </li> </p>
-                  <p> <li> <span style="color:rgba(0, 0, 0, 0.9);"       ><strong>⚫ Zone 85.4 → 100  </strong></span> : Potentiel plus haut de cycle haussier. </li> </p>
-                  <p> <li> <span style="color:rgb(180, 26, 15);"         ><strong>🔴 Zone 85.4 → 14.6 </strong></span> : Phase baissière du cycle.              </li> </p>
-                  
-                </ul>
+        <br>
 
-              <br> 
-
-                <li> <strong> Mode 3 “ Zone-Sentiment-Cfgi  ” </strong> <br> </li>
-
-                <br> - Affiche au prix du Bitcoin la coloration des zones de sentiment du CFGI.                                                                <br>
-
-                <br> - Permet de representer visuelement le sentiment sur le prix du BTC. <br>
-              <br> 
-
-
-
-            </ol>
-
-        </details>
-
-      </footer>
+      </details>
+    </footer>
 
     <!-- ======================================================================================================================== -->
 
@@ -620,7 +849,7 @@
 
 
   <!-- ======================================================================================================================== -->
-  <!--                                       7 : SCRIPTS IMPORTÉS (MODULES JS)                                                  -->
+  <!--                                       8 : SCRIPTS IMPORTÉS (MODULES JS)                                                  -->
   <!-- ======================================================================================================================== -->
 
 
@@ -629,7 +858,9 @@
   <script src="Cbbi/cbbi-chart-fibo.js"></script>                   
 
   <script src="Cbbi/cbbi-color-btc.js"></script>                         
-  <script src="Cbbi/cbbi-color-cycle-btc.js"></script>                      
+  <script src="Cbbi/cbbi-color-cycle-btc.js"></script>              
+ 
+         
 
 
   <!-- Chart BTC -->
@@ -638,7 +869,7 @@
 
   <script src="Btc/Cross/line-verticale.js"></script> 
  
-  <script src="Btc/m2-layer.js"></script>
+
 
 
   <!-- Chart CFGI -->
@@ -646,6 +877,28 @@
   <script src="CFGI/cfgi-chart.js"></script>       
 
   <script src="CFGI/cfgi-color-btc.js"></script> 
+
+
+
+
+  <!-- Chart CFGI -->
+
+  <script src="RSI/rsi-chart.js"></script>    
+  <script src="RSI/rsi-color-btc.js"></script>   
+
+  
+    
+
+  <script>
+    document.querySelectorAll("button").forEach(btn => {
+        btn.addEventListener("click", () => {
+            btn.classList.toggle("active");
+        });
+    });
+  </script>
+
+  <script src="gestion-html.js"></script>
+
 
 </body>
 </html>
