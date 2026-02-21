@@ -2,7 +2,7 @@
 
 // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-// cfgi-chart.js 
+//  indicator-main/CFGI/cfgi-chart.js 
 // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -35,24 +35,23 @@
 // ===================================================================================================================================
 //                                // Palette des couleurs des zones du CFGi (du plus petit au plus grand)
 
+// pour cfgi-chart.js
 const zoneColorsCFGI = [
-	{ color: 'rgb(7, 49, 2)'            , label: "Extreme Fear"        },    // 0–20
-	{ color: 'rgba(60, 221, 28, 0.47)'  , label: "Fear / Extreme Fear" },    // 20–40
-	{ color: 'rgba(235, 235, 74, 0.57)' , label: "Neutral / Fear"      },    // 40–60
-	{ color: 'rgba(233, 157, 15, 0.5)'  , label: "Greed / Neutral"     },    // 60–80
-	{ color: 'rgba(224, 19, 19, 0.66)'  , label: "Extreme Greed"       },    // 80–100
+	{ color: 'rgba(250, 250, 250, 0.7)' , label: "Extreme Fear"        },    // 0–20
+	{ color: 'rgba(60, 221, 28, 0.7)'   , label: "Fear / Extreme Fear" },    // 20–40
+	{ color: 'rgba(235, 235, 74, 0.7)'  , label: "Neutral / Fear"      },    // 40–60
+	{ color: 'rgba(233, 157, 15, 0.7)'  , label: "Greed / Neutral"     },    // 60–80
+	{ color: 'rgba(224, 19, 19, 0.7)'   , label: "Extreme Greed"       },    // 80–100
 ];
 
-
+// pour cfgi-color-btc.js
 const zoneColorsCFGI2 = [
-	{ color: 'rgb(7, 49, 2)'     },    // 0–20
-	{ color: 'rgb(35, 187, 93)'  },    // 20–40
-	{ color: 'rgb(235, 235, 74)' },    // 40–60
-	{ color: 'rgb(233, 157, 15)' },    // 60–80
-	{ color: 'rgb(224, 19, 19)'  },    // 80–100
+	{ color: 'rgba(250, 250, 250, 0.9)' },    // 0–20
+	{ color: 'rgba(60, 221, 28, 0.9)'   },    // 20–40
+	{ color: 'rgba(235, 235, 74, 0.9)'  },    // 40–60
+	{ color: 'rgba(233, 157, 15, 0.9)'  },    // 60–80
+	{ color: 'rgba(224, 19, 19, 0.9)'   },    // 80–100
 ];
-
-
 
 
 
@@ -77,21 +76,52 @@ async function fetchAndDrawCFGIChart() {
 		value: Number(item.value),
 	}));
 
-	chartCFGI = LightweightCharts.createChart(document.getElementById("chartCFGI"), {
+	// ► Création du graphique avec LightweightCharts
+	chartCFGI = LightweightCharts.createChart(document.getElementById("chartCFGI"), {   // ici chart en chartCFGI
 		width: document.getElementById("chartCFGI").clientWidth,
 		height: 500,
-		layout: { background: { color: "#fff" }, textColor: "#000" },
-		grid: { vertLines: { color: "#eee" }, horzLines: { color: "#eee" } },
-		timeScale: { timeVisible: true, rightOffset: 50, barSpacing: 5 },
-		handleScroll: { mouseWheel: true, pressedMouseMove: true },
-		handleScale: { mouseWheel: true, pinch: true, axisPressedMouseMove: true },
-		priceScale: { borderVisible: true },
+
+		layout: {
+			background: { color: 'rgba(42, 48, 61, 0.6)'   },
+			textColor: "#ffffffff"
+		},
+
+		grid: {
+			vertLines: { color: 'rgba(60, 63, 70, 0.6)' },
+			horzLines: { color: 'rgba(60, 63, 70, 0.6)' }
+		},
+
 		crosshair: {
 			mode: LightweightCharts.CrosshairMode.Normal,
-			vertLine: { color: 'rgba(0,0,0,0.5)', width: 1 },
-			horzLine: { color: 'rgba(0,0,0,0.5)', width: 1 }
+			vertLine: { color: '#cccccc', width: 1 },
+			horzLine: { color: '#cccccc', width: 1 }
 		},
+
+		priceScale: { borderVisible: true },
+		rightPriceScale: { borderColor: '#cccccc', visible: true },
+
+		timeScale: {
+			borderColor: '#cccccc',
+			timeVisible: true,
+			secondsVisible: false,
+			rightOffset: 50,
+			barSpacing: 5,
+			minBarSpacing: 0,
+			fixLeftEdge: false
+		},
+
+		handleScroll: {
+			mouseWheel: true,
+			pressedMouseMove: true
+		},
+
+		handleScale: {
+			mouseWheel: true,
+			pinch: true,
+			axisPressedMouseMove: true
+		}
 	});
+
 
 	chartCFGI.timeScale().applyOptions({
 		minBarSpacing: 0.01,
@@ -100,7 +130,7 @@ async function fetchAndDrawCFGIChart() {
 	});
 
 	baseSeriesCFGI = chartCFGI.addLineSeries({
-		color: 'rgba(0, 0, 255, 0.21)',
+		color: '#9abaf7ff',
 		lineWidth: 2,
 		lastValueVisible: false, // désactive l’étiquette auto
 	});
@@ -119,7 +149,7 @@ async function fetchAndDrawCFGIChart() {
 	// Ajout de l’étiquette dynamique selon la zone
 	const lastValue = data[data.length - 1].value;
 	const zoneIndex = findZoneIndex(lastValue);
-	const zoneInfo = zoneColorsCFGI[zoneIndex] || { color: 'rgba(0,0,0,0.6)', label: '' };
+	const zoneInfo = zoneColorsCFGI[zoneIndex] || { color: 'rgba(243, 240, 240, 0.6)', label: '' };
 
 	priceLineLabelCFGI = baseSeriesCFGI.createPriceLine({
 		price: lastValue,
@@ -129,9 +159,28 @@ async function fetchAndDrawCFGIChart() {
 		title: `${zoneInfo.label}`,
 	});
 
-	// Bouton du Cfgi
-	document.getElementById('btnDrawFiboCFGI').onclick = () => drawFixedFibonacciZones(data);
-	document.getElementById('btnClearFiboCFGI').onclick = clearFibonacciCFGI;
+	// Bouton unique toggle pour CFGI
+	let fiboCFGIActive = false;
+	const btnCFGI = document.getElementById('btnToggleFiboCFGI');
+
+	btnCFGI.onclick = () => {
+		if (!fiboCFGIActive) {
+			drawFixedFibonacciZones(data);
+			fiboCFGIActive = true;
+
+			btnCFGI.classList.remove("off");
+			btnCFGI.classList.add("on");
+			btnCFGI.textContent = "Supprimer Zones CFGI";
+
+		} else {
+			clearFibonacciCFGI();
+			fiboCFGIActive = false;
+
+			btnCFGI.classList.remove("on");
+			btnCFGI.classList.add("off");
+			btnCFGI.textContent = "Tracer Zones CFGI";
+		}
+	};
 
 
 	// stocke le mapping date => CFGI pour l'overlay sur BTC
@@ -173,7 +222,7 @@ function drawFixedFibonacciZones(data) {
 	fibLevels.forEach((level, index) => {
 		const line = baseSeriesCFGI.createPriceLine({
 			price: level,
-			color: zoneColorsCFGI[index] ? zoneColorsCFGI[index].color : 'rgba(10, 0, 0, 0.81)',
+			color: zoneColorsCFGI[index] ? zoneColorsCFGI[index].color : 'rgba(250, 250, 250, 0.9)',
 			lineWidth: 1,
 			lineStyle: LightweightCharts.LineStyle.Solid,
 			axisLabelVisible: true,
