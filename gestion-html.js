@@ -76,12 +76,15 @@ document.addEventListener("DOMContentLoaded", () => {
 // ===================================================================================================================================
 //                                // gestion des bouton pour cacher les footer de DATA 1,2,3,4
 
+
+
+
     const btnMode1 = document.getElementById("btnToggleMode1Data");
     if (btnMode1) {
         btnMode1.onclick = () => {
             toggleSection(
                 "section-btc",
-                btnMode2,
+                btnMode1,
                 "Afficher DATA 1 ( BTC Chart )",
                 "Masquer DATA 1 ( BTC Chart )"
             );
@@ -94,7 +97,7 @@ document.addEventListener("DOMContentLoaded", () => {
         btnMode2.onclick = () => {
             toggleSection(
                 ["section-cbbi", "explication-cbbi"],
-                btnMode1,
+                btnMode2,
                 "Afficher DATA 2 ( CBBI Chart )",
                 "Masquer DATA 2 ( CBBI Chart )"
             );
@@ -126,5 +129,24 @@ document.addEventListener("DOMContentLoaded", () => {
             );
         };
     }
+
+
+    const btnMode5 = document.getElementById("btnToggleMode5Data");
+    if (btnMode5) {
+        btnMode5.onclick = () => {
+            toggleSection(
+                ["section-MAJ"],
+                btnMode5,
+                "Afficher Uptade ",
+                "Masquer Uptdade "
+            );
+        };
+    }
+
+
+
+
+
+
 
 });
