@@ -13,7 +13,10 @@
 
 <!-- ======================================================================================================================== -->
 <!--                                       1 : STYLES GÉNÉRAUX                                                                -->
-<!--                                                                                                                          -->                                                                                  
+<!--                                                                                                                          -->  
+<!-- ======================================================================================================================== -->    
+<!--                                       0 : Dernière update                                                                -->
+<!--                                                                                                                          -->                                                                             
 <!-- ======================================================================================================================== -->
 <!--                                       2 : PANEAUX CONFIG DATA (TRIE AFICHAGE DES DONNEE)                                 -->
 <!--                                                                                                                          -->   
@@ -232,6 +235,10 @@
 <body>
 
 
+  <a href="index2.html">
+    <button>Aller à la page suivante</button>      <!-- test double page a voir (pas necesaire) -->  
+  </a>
+
 
   <!-- ======================================================================================================================== -->
   <!--                                       0 : Dernière update                                                                -->                                  
@@ -241,7 +248,7 @@
 <footer id="section-MAJ" > 
   <details>  
 
-    <summary> <h2> 🔎 Dernière update ? ( V0.4 ) </h2> </summary> 
+    <summary> <h2> 🔎 Dernière update ? ( V0.4 ) (( V0.5 ) A VENIR)</h2> </summary> 
 
     <section>
 
@@ -290,10 +297,38 @@
 
       - / V0.4 / Ajout des panneaux de contrôle d’affichage des modules (section 0) <br><br>
 
+      <br>
+
+      - / V0.5 / PAS ENCORE FAIS , POUR BIENTOT /  <br><br>     
+
+      <ul>
+
+        <p><li> / V0.5 / Apres une modification manuelle des données du CBBI faite par colin et kamil    </li></p>
+        <figure>
+            <img src="main\\CBBI avant.png" alt="Comparaison des versions CBBI" width="800">
+            <figcaption>Capture avant modif de colin et kamil.</figcaption>
+        </figure>
+
+        <figure>
+            <img src="main\CBBI apres.png" alt="Comparaison des versions CBBI" width="800">
+            <figcaption>Capture apres modif de colin et kamil.</figcaption>
+        </figure>      
+
+        <p><li> (reponse de kamil sur le sujet : Hello, Colin and I decided to mark the price high because we both believe it won't be beaten this cycle. This means they are now used to improve future scores and better adjust to current market realities. A similar situation happens with price lows, but usually it goes unnoticed as it makes smaller changes. This cycle was much different from the rest, so the adjustment became more noticeable. -Kamil) </li></p> 
+        <p><li> (reponse de kamil sur le sujet VF : Bonjour, Colin et moi avons décidé de fixer le prix au plus haut car nous pensons tous les deux qu'il ne sera pas dépassé durant ce cycle. Cela signifie que ces prix servent désormais à améliorer les performances futures et à mieux s'adapter aux réalités actuelles du marché. Une situation similaire se produit avec les prix au plus bas, mais elle passe généralement inaperçue car les variations sont plus faibles. Ce cycle était très différent des précédents, ce qui a rendu l'ajustement plus visible. – Kamil) </li></p> 
+        
+        
+        <p><li> Il est donc prevue une amelioration du site pour permettre l'utilisation de 2 version des données CBBI (au choix). </li></p>
+        <p><li> La première : version clasique utilisant l'apy officielle de colin , avec des valeur requalibrer selon leur interpretation du marché  </li></p>
+        <p><li> La deuxième : un fork du projet de collin pour avoir des valeur CBBI réel non modifier manuellement  </li></p>        
+
+      </ul>       
+
     </section>
 
   </details>
 </footer>
+
 
 
   <!-- ======================================================================================================================== -->
@@ -305,6 +340,7 @@
 
 
     <h2> 0 - Paneaux configuration data   </h2>   
+    
 
       <button id="btnToggleMode1Data">Masquer DATA 1 ( BTC Chart )</button>    
 
@@ -314,7 +350,7 @@
 
       <button id="btnToggleMode4Data">Masquer DATA 4 ( RSI Chart )</button>
 
-      <button id="btnToggleMode5Data">Masquer Update</button>           
+      <button id="btnToggleMode5Data">Masquer Update</button>         
 
       <br>
 
@@ -481,94 +517,113 @@
     <!--                                       7.1 : 📊 Utilisation du projet CBBI + Zones Fibonacci                              -->
     <!-- ======================================================================================================================== -->
 
-      <footer>
-
+      <footer> 
         <details> 
- 
-          <summary> <h2> 📊 Utilisation du projet CBBI + Zones Fibonacci </h2> </summary>
+          <summary> <h2> 📊 Utilisation du projet  </h2> </summary>
 
-            <p> Ce projet permet de visualiser les cycles du marché Bitcoin grâce à l’indicateur CBBI combiné aux zones de retracement de Fibonacci. Il propose deux modes d’analyse : </p>
+          <ol>
 
-            <ol>
+            <footer>
+              <details>
+                  <summary>Graphique</summary>
+                    
+                    <br> 
+                      <strong> Graphique du BTC </strong> <br> 
 
-              <br> 
-                 <strong> Graphique du CBBI </strong> <br>  
+                      <br> - Affiche le prix du Bitcoin avec une coloration specifique au mode selectionner. <br>
+                    <br> 
 
-                <br> - Affiche le CBBI avec les niveaux de Fibonacci ( 0 , 0.146 , 0.236 , 0.382 , 0.5 , 0.618 , 0.786 , 0.854 , 0.90 , 1 ) et colore les segments selon leur zone. <br>
-                
-                <br> - Ce mode permet aussi de voir si le CBBI réagit en touchant ces zones de fibo.         <br>
-              <br> 
+                    <br> 
+                      <strong> Graphique du CBBI </strong> <br>  
 
-              <br> 
-                 <strong> Graphique du BTC </strong> <br> 
+                      <br> - Affiche le CBBI avec les niveaux de Fibonacci ( 0 , 0.146 , 0.236 , 0.382 , 0.5 , 0.618 , 0.786 , 0.854 , 0.90 , 1 ) et colore les segments selon leur zone. <br>
+                      
+                      <br> - Ce mode permet aussi de voir si le CBBI réagit en touchant ces zones de fibo.         <br>
+                    <br>               
 
-                <br> - Affiche le prix du Bitcoin avec une coloration selon le mode de zones Fibonacci du CBBI sélectionné, pour mieux comprendre les phases du marché. <br>
-              <br> 
+                    <br> 
+                      <strong> Graphique du CFGI </strong> <br> 
 
-              <br> 
-                 <strong> Graphique du CFGI </strong> <br> 
+                      <br> - Affiche la valeur du CFGI ainsi que ces zone de sentiment. <br>
+                    <br> 
 
-                <br> - Affiche la valeur du CFGI ainsi que ces zone de sentiment. <br>
-              <br> 
+                    <br> 
+                      <strong> Graphique du RSI  </strong> <br> 
 
-
-              <br> 
-                <li> <strong> Mode 1 “ Zone-Fibo-CBBI ” </strong> <br> </li>
-
-                <br> - Affiche au prix du Bitcoin la coloration des zones Fibonacci du CBBI.                                                                <br>
-
-                <br> - Permet de representer visuelement les corelation entre le CBBI touchant ces zones de fibo et l’impact que cela a sur le prix du BTC. <br>
-              <br> 
-              
-
-              <br> 
-                <li> <strong> Mode 2 “ Zones-Fibo-Cycle-CBBI ” </strong> <br> </li>
-                                
-                <br> - Affiche au prix du Bitcoin la coloration des zones Fibonacci ( 0 , 14.6 , 85.4 , 100 ) du CBBI. <br>
-
-                <br> - Simplifie la lecture des cycles :                                                               <br>
-
-                <ul>
-
-                  <p> <li> <span style="color:rgba(216, 176, 240, 1);" ><strong>⚪ Zone 0 → 14.6    </strong></span> : Potentiel plus bas de cycle baissier.  </li> </p>
-                  <p> <li> <span style="color:rgba(100, 220, 100, 0.9);" ><strong>🟢 Zone 14.6 → 85.4 </strong></span> : Phase haussière du cycle (selon dynamique).              </li> </p>
-                  <p> <li> <span style="color:rgba(255, 255, 255, 0.9);" ><strong>⚪ Zone 85.4 → 100  </strong></span> : Potentiel plus haut de cycle haussier. </li> </p>
-                  <p> <li> <span style="color:rgb(180, 26, 15);"         ><strong>🔴 Phase 85.4 → 14.6 </strong></span> : Phase baissière du cycle lorsque la dynamique s’inverse.              </li> </p>
-                  
-                </ul>
-
-                <br> - Logique conditionnelle complémentaire (cycle sans extreme ): <br>
-
-                <ul>
-
-                  <p> <li> <span style="color:rgb(180, 26, 15);" ><strong>🔴 Sur-achat confirmé (78.6 → 50)</strong></span> : Après un passage au-dessus de 78.6, la coloration rouge débute si le niveau 50 est touché sans avoir a passer par les 85.4 . </li> </p>
-                  <p> <li> <span style="color:rgba(100, 220, 100, 0.9);" ><strong>🟢 Sur-vente confirmée (14.6 → 23.6)</strong></span> : Après un passage sous 14.6, la coloration verte débute si le niveau 23.6 est touché sans avoir a passer par les 14.6 . </li> </p>
-                  
-                </ul>
-
-              <br> 
-
-                <li> <strong> Mode 3 “ Zone-Sentiment-Cfgi  ” </strong> <br> </li>
-
-                <br> - Affiche au prix du Bitcoin les zones de sentiment du CFGI.                                                                <br>
-
-                <br> - Permet de representer visuelement le sentiment sur le prix du BTC. <br>
-              <br> 
-
-              <br> 
-
-                <li> <strong> Mode 4 “ Zone-RSI  ” </strong> <br> </li>
-
-                <br> - Affiche au prix du Bitcoin les zones du RSI.                                                                <br>
-
-                <br> - Apllication des zone de RSI sur le prix du BTC. <br>
-              <br>               
+                      <br> - Affiche la valeur du RSI mensuel avec coloration  <br>
+                    <br>    
+                </details>             
+              </footer>
 
 
-            </ol>
+            <footer>
+              <details>   
+                  <summary>Mode color btc </summary>
+
+                    <br> 
+                      <li> <strong> Mode 1 “ Zone-Fibo-CBBI ” </strong> <br> </li>
+
+                      <br> - Affiche au prix du Bitcoin la coloration des zones Fibonacci ( 0 , 0.146 , 0.236 , 0.382 , 0.5 , 0.618 , 0.786 , 0.854 , 0.90 , 1 ) du CBBI.                                                                <br>
+
+                      <br> - Permet de representer visuelement les corelation entre le CBBI touchant ces zones de fibo et l’impact potentiel que cela pourai avoir sur le BTC. <br>
+                    <br> 
+                    
+
+                    <br> 
+                      <li> <strong> Mode 2 “ Zones-Fibo-Cycle-CBBI ” </strong> <br> </li>
+                                      
+                      <br> - Affiche au prix du Bitcoin la coloration des zones Fibonacci ( 0 , 14.6 , 85.4 , 100 ) du CBBI. <br>
+
+                      <br> - Simplifie la lecture des cycles :                                                               <br>
+
+                      <ul>
+
+                        <p> <li> <span style="color:rgba(216, 176, 240, 1);" ><strong>⚪ Zone 0 → 14.6    </strong></span> : Potentiel plus bas de cycle baissier.  </li> </p>
+                        <p> <li> <span style="color:rgba(100, 220, 100, 0.9);" ><strong>🟢 Zone 14.6 → 85.4 </strong></span> : Phase haussière du cycle (inversion de la dynamique).              </li> </p>
+                        <p> <li> <span style="color:rgba(255, 255, 255, 0.9);" ><strong>⚪ Zone 85.4 → 100  </strong></span> : Potentiel plus haut de cycle haussier. </li> </p>
+                        <p> <li> <span style="color:rgb(180, 26, 15);"         ><strong>🔴 Phase 85.4 → 14.6 </strong></span> : Phase baissière du cycle (inversion de la dynamique).              </li> </p>
+                        
+                      </ul>
+
+                      <br> - Logique conditionnelle complémentaire (cycle sans extreme ): <br>
+
+                      <ul>
+
+                        <p> <li> <span style="color:rgb(180, 26, 15);" ><strong>🔴 Sur-achat confirmé (78.6 → 50)</strong></span> :
+                           Après un passage au-dessus de <span style="color: rgba(216, 11, 11, 0.9);" ><strong>78.6</strong></span> 
+                           la coloration rouge débute si le niveau <span style="color: rgba(9, 217, 245, 0.9);" ><strong>50</strong></span> 
+                           est touché sans avoir a passer par les <span style="color: rgba(255, 255, 255, 0.9);" ><strong>85.4</strong></span> . </li> </p>
+
+                        <p> <li> <span style="color:rgba(100, 220, 100, 0.9);" ><strong>🟢 Sur-vente confirmée (23.6 → 38.2)</strong></span> :
+                           Après un passage sous <span style="color: rgba(233, 157, 15, 0.9);" ><strong>23.6</strong></span> 
+                           la coloration verte débute si le niveau <span style="color: rgba(43, 146, 23, 0.9);" ><strong>38.2</strong></span> 
+                           est touché sans avoir a passer par les <span style="color: rgba(216, 176, 240, 1);" ><strong>14.6</strong></span> . </li> </p>
+                        
+                      </ul>
+
+                    <br> 
+
+                      <li> <strong> Mode 3 “ Zone-Sentiment-Cfgi  ” </strong> <br> </li>
+
+                      <br> - Affiche au prix du Bitcoin les zones de sentiment du CFGI.                                                                <br>
+
+                      
+                    <br> 
+
+                    <br> 
+
+                      <li> <strong> Mode 4 “ Zone-RSI  ” </strong> <br> </li>
+
+                      <br> - Affiche au prix du Bitcoin les zones du RSI.                                                                <br>
+
+                      
+                    <br>               
+                </details>
+              </footer>
+
+          </ol>
 
         </details>
-
       </footer>
 
     <!-- ======================================================================================================================== -->
@@ -612,8 +667,7 @@
               <h2> 🎯 Objectifs et utilité </h2>
               <p>Le CBBI est utilisé principalement pour : </p>
               <ul>
-                <li> Apprécier la position actuelle du marché dans le cycle haussier du Bitcoin.            </li>
-                <li> Renforcer l’analyse de long terme à travers un indicateur agrégé fiable.               </li>
+                <li> Determiner la position actuelle du marché dans le cycle haussier du Bitcoin.            </li>
                 <li> Simplifier l'interprétation de plusieurs métriques complexes en un seul indice global. </li>
                 <li> Identifier des zones de prudence ou d’opportunité, sur la base de données historiques. </li>
               </ul>
@@ -963,8 +1017,5 @@
 
 </body>
 </html>
-
-
-
 
 
