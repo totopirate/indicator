@@ -40,35 +40,22 @@
 // ===================================================================================================================================
 //                                // Récupère un batch d’historique BTC (2000 jours max) via l’API CryptoCompare
 
-async function fetchCryptoCompareHistodayBatch(symbol = 'BTC', currency = 'USD', toTs = Math.floor(Date.now() / 1000), limit = 2000) {
-	const url = `https://min-api.cryptocompare.com/data/v2/histoday?fsym=${symbol}&tsym=${currency}&limit=${limit}&toTs=${toTs}`;
-	const res = await fetch(url);
-	const json = await res.json();
-	if (json.Response !== 'Success') throw new Error('Erreur API Cryptocompare: ' + json.Message);
-	return json.Data.Data;
-}
 
+// Charge l'historique BTC depuis un fichier local JSON
+async function fetchFullHistory() {
+    const res = await fetch('/Btc/btcdata.json');
+    if (!res.ok) throw new Error('Impossible de charger btcdata.json');
+
+    const json = await res.json();
+
+    // On s'assure que les données sont triées par temps croissant
+    return json.sort((a, b) => a.time - b.time);
+}
 
 // 1.2 :
 // ===================================================================================================================================
 //                                // Récupère l’historique complet de BTC depuis 2010 (en plusieurs batches)
 
-async function fetchFullHistory() {
-	let allData = [];
-	let toTs = Math.floor(Date.now() / 1000);
-	const oldestTimestamp = Math.floor(new Date('2010-01-01T00:00:00Z').getTime() / 1000);
-	const limit = 2000;
-
-	while (toTs > oldestTimestamp) {
-		const batch = await fetchCryptoCompareHistodayBatch('BTC', 'USD', toTs, limit);
-		if (batch.length === 0) break;
-
-		allData = batch.concat(allData);
-		toTs = batch[0].time - 1;
-		if (batch[0].time <= oldestTimestamp) break;
-	}
-	return allData.filter(d => d.time >= oldestTimestamp);
-}
 
 
 // 1.3 :
