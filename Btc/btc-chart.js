@@ -43,7 +43,7 @@
 
 // Charge l'historique BTC depuis un fichier local JSON
 async function fetchFullHistory() {
-    const res = await fetch('Btc/btcdata.json');
+    const res = await fetch('btcdata.json');
     if (!res.ok) throw new Error('Impossible de charger btcdata.json');
 
     const json = await res.json();
