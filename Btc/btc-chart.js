@@ -1,5 +1,6 @@
 
 
+
 // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------  
 
 // indicator-main/Btc/btc-chart.js
@@ -12,10 +13,10 @@
 
 // ===================================================================================================================================
 //                                1.1 :
-//                                // Récupère un batch d’historique BTC (2000 jours max) via l’API CryptoCompare
+//                                // Récupère un batch d’historique BTC (2000 jours max) via l’API binance
 // ===================================================================================================================================
 //                                1.2 :
-//                                // Récupère l’historique complet de BTC depuis 2010 (en plusieurs batches)
+//                                // // afiche historique BTC via btcdata.js ( json de data tradingview telecharger) + via api binance pour data actuelle
 // ===================================================================================================================================
 //                                1.3 :
 //                                // Transforme les données de prix en échelle logarithmique (log10)
@@ -35,27 +36,82 @@
 
 
 
-
 // 1.1 :
 // ===================================================================================================================================
-//                                // Récupère un batch d’historique BTC (2000 jours max) via l’API CryptoCompare
+//                                // Récupère un batch d’historique BTC (depuis 2018) via l’API binance
 
+async function fetchBinanceFullHistory() {
 
-// Charge l'historique BTC depuis un fichier local JSON
-async function fetchFullHistory() {
-    const res = await fetch('./Btc/btcdata.json'); 
-    if (!res.ok) throw new Error('Impossible de charger btcdata.json');
+    const limit = 1000;
+    const symbol = "BTCUSDT";
+    const interval = "1d";
 
-    const json = await res.json();
+    let all = [];
+    let startTime = 0; // début de Binance historique
+    let fetchMore = true;
 
-    // On s'assure que les données sont triées par temps croissant
-    return json.sort((a, b) => a.time - b.time);
+    while (fetchMore) {
+
+        const url = `https://api.binance.com/api/v3/klines?symbol=${symbol}&interval=${interval}&limit=${limit}&startTime=${startTime}`;
+
+        const res = await fetch(url);
+        const data = await res.json();
+
+        if (!data.length) break;
+
+        const formatted = data.map(c => ({
+            time: Math.floor(c[0] / 1000),
+            open: parseFloat(c[1]),
+            high: parseFloat(c[2]),
+            low: parseFloat(c[3]),
+            close: parseFloat(c[4])
+        }));
+
+        all = all.concat(formatted);
+
+        // prochain point de départ = dernière bougie + 1 ms
+        startTime = data[data.length - 1][0] + 1;
+
+        // stop si moins que limit (fin des données)
+        if (data.length < limit) {
+            fetchMore = false;
+        }
+    }
+
+    return all;
 }
 
 // 1.2 :
 // ===================================================================================================================================
-//                                // Récupère l’historique complet de BTC depuis 2010 (en plusieurs batches)
+//                                // afiche historique BTC via btcdata.js ( json de data tradingview telecharger) + via api binance pour data actuelle
 
+async function fetchFullHistory() {
+
+    const binance = await fetchBinanceFullHistory();
+
+    const btcData = window.btcData || [];
+
+    // normalisation BTCDATA (important)
+    const historical = btcData.map(d => ({
+        time: d.time,
+        open: d.open ?? d.close,
+        high: d.high ?? d.close,
+        low: d.low ?? d.close,
+        close: d.close
+    }));
+
+    // fusion
+    const mergedMap = new Map();
+
+    [...historical, ...binance].forEach(d => {
+        mergedMap.set(d.time, d);
+    });
+
+    const merged = Array.from(mergedMap.values())
+        .sort((a, b) => a.time - b.time);
+
+    return merged;
+}
 
 
 // 1.3 :
