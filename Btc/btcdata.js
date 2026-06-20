@@ -1,4 +1,4 @@
-window.btcData =[
+window.btcData =[ 
   {
     "time": 1254700800,
     "open": 0.00076392,
