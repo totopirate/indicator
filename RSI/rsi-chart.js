@@ -89,34 +89,63 @@ function rsiColor(val) {
 
 // 1.3 :
 // ===================================================================================================================================
-//                                // Fonction fetchFullHistory() : récupération historique BTC quotidien
+//                                // Fonction fetchFullHistory() : récupération historique BTC quotidien via api biance + btcdata.js 
 
-async function fetchFullHistory() {
-    if (btcDailyCache) return btcDailyCache;
+async function fetchBinanceFullHistory() {
 
-    let allData = [];
-    let toTs = Math.floor(Date.now() / 1000);
-    const oldestTimestamp = Math.floor(new Date('2010-01-01T00:00:00Z').getTime() / 1000);
-    const limit = 2000;
+    const limit = 1000;
+    const symbol = "BTCUSDT";
+    const interval = "1d";
 
-    try {
-        while(toTs > oldestTimestamp) {
-            const res = await fetch(`https://min-api.cryptocompare.com/data/v2/histoday?fsym=BTC&tsym=USD&limit=${limit}&toTs=${toTs}`);
-            const json = await res.json();
-            if(!json || !json.Data || json.Data.Data.length === 0) break;
-            allData = json.Data.Data.concat(allData);
-            toTs = json.Data.Data[0].time - 1;
-            if (json.Data.Data[0].time <= oldestTimestamp) break;
-        }
-        btcDailyCache = allData.filter(d => d.time >= oldestTimestamp);
-        return btcDailyCache;
-    } catch (e) {
-        console.error('Erreur chargement données BTC :', e);
-        throw e;
+    let all = [];
+    let startTime = 0;
+    let fetchMore = true;
+
+    while (fetchMore) {
+
+        const url = `https://api.binance.com/api/v3/klines?symbol=${symbol}&interval=${interval}&limit=${limit}&startTime=${startTime}`;
+
+        const res = await fetch(url);
+        const data = await res.json();
+
+        if (!data.length) break;
+
+        const formatted = data.map(c => ({
+            time: Math.floor(c[0] / 1000),
+            close: parseFloat(c[4])
+        }));
+
+        all = all.concat(formatted);
+
+        startTime = data[data.length - 1][0] + 1;
+
+        if (data.length < limit) break;
     }
+
+    return all;
 }
 
 
+async function fetchFullHistory() {
+
+    const binance = await fetchBinanceFullHistory();
+
+    const btcData = window.btcData || [];
+
+    const historical = btcData.map(d => ({
+        time: d.time,
+        close: d.close
+    }));
+
+    const mergedMap = new Map();
+
+    [...historical, ...binance].forEach(d => {
+        mergedMap.set(d.time, d);
+    });
+
+    return Array.from(mergedMap.values())
+        .sort((a, b) => a.time - b.time);
+}
 // 1.4 :
 // ===================================================================================================================================
 //                                // Conversion des données journalières en données mensuelles
